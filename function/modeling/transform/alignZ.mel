@@ -1,0 +1,110 @@
+/*
+//originally by Chris "Funky Bunnies" Whitaker
+Edited by Liu Dian
+*/
+
+global proc alignZ()
+{
+	int $direction = 2;
+	float $sumX=0, $sumY=0, $sumZ=0;
+	if (size( `polyEvaluate -vc -ec -fc`) == 3) 
+    {
+		string $selectedComponents[];
+        $selectedComponents = `filterExpand -ex 1 -sm 31 -sm 32 -sm 34`; 
+		if (!`size $selectedComponents`)
+		{warning "must have components selected to use polyPlanarize"; return;}
+		
+		string $actualSelection[] = `ls -sl`;
+		string $actualHilited[] = `ls -hl`; 
+		string $shapeNode[] = `ls -sl -o`;
+		string $hilited[] = `filterExpand -sm 12 -expand true $shapeNode`;
+		
+		select -r $selectedComponents;
+
+        for ($i=0;$i<`size $selectedComponents`;$i++)
+        {	
+            float $temp[] = `exactWorldBoundingBox $selectedComponents[$i]`;
+            $sumX += ($temp[0]+$temp[3])/2;
+            $sumY += ($temp[1]+$temp[4])/2;
+            $sumZ += ($temp[2]+$temp[5])/2;
+        } 
+
+		if ($direction == 0)
+		{
+			move -a -ws -x ($sumX/(`size $selectedComponents`));
+		}
+		else if ($direction == 1)
+		{
+			move -a -ws -y ($sumY/(`size $selectedComponents`));
+		}
+		else if ($direction == 2)
+		{
+			move -a -ws -z ($sumZ/(`size $selectedComponents`));
+		}
+		else if ($direction == 3)
+		{	
+			hilite $hilited; 
+			ConvertSelectionToFaces; 
+			undoInfo -swf 1; 
+			string $planarProjectNode[] = `polyProjection -md "bestPlane"`;
+			float $bestOrient[] = { float(`getAttr ($planarProjectNode[0]+".rotateX")`), 
+									float(`getAttr ($planarProjectNode[0]+".rotateY")`), 
+									float(`getAttr ($planarProjectNode[0]+".rotateZ")`)};
+			undo;
+			
+			float $objAvg[] = {$sumX/(`size $selectedComponents`), $sumY/(`size $selectedComponents`), $sumZ/(`size $selectedComponents`)};
+						
+			for ($hilitedObject in $hilited) 
+			{
+
+				string $parent[] = `listRelatives -allParents $hilitedObject`;
+				string $defaultPivot[] = `spaceLocator -p 0 0 0 -n nullOrigPivot`; 
+					parentConstraint -weight 1 $hilitedObject $defaultPivot[0];
+					delete -constraints $defaultPivot[0];
+					
+				string $davidBowie[] = `spaceLocator -p 0 0 0 -n nullTempPivot`; 
+				move -ws -a $objAvg[0] $objAvg[1] $objAvg[2]; 
+					setAttr ($davidBowie[0] +".rotateX") ($bestOrient[0]);
+					setAttr ($davidBowie[0] +".rotateY") ($bestOrient[1]);
+					setAttr ($davidBowie[0] +".rotateZ") ($bestOrient[2]);
+				parent $hilitedObject $davidBowie[0];
+				makeIdentity -apply true -t 1 -r 1 -s 1 -n 0 $hilitedObject;
+							
+				select -r $selectedComponents; 
+				select -r `ls -sl ($hilitedObject+".vtx[*]") ($hilitedObject+".e[*]") ($hilitedObject+".f[*]")`;
+				
+			scale -r -p $objAvg[0] $objAvg[1] $objAvg[2]  1 1 0; 
+				parent $hilitedObject $defaultPivot[0];
+				makeIdentity -apply true -t 1 -r 1 -s 1 -n 0 $hilitedObject;
+				
+
+				if (`size $parent`)
+					parent $hilitedObject $parent;
+				else
+					parent -w $hilitedObject;
+				delete $davidBowie[0] $defaultPivot[0];
+				
+				string $recentNodes[] = `listHistory $hilitedObject`;
+				for($i=0;$i<4;$i++)
+				{
+					if(`startsWith $recentNodes[$i] "transformGeometry"`)
+					{
+						if ($i<2)
+							rename $recentNodes[$i] "pPlnrzReset#";
+						else
+							rename $recentNodes[$i] "pPlnrzAlign#";
+					}
+					else if (`startsWith $recentNodes[$i] "polyTweak"`)
+						rename $recentNodes[$i] "polyPlanarize#";
+				}
+			}
+		if (`size $hilited`>1)
+			warning "It's recommended that you select only one object at a time for Best Plane!";
+		}
+		select -r $actualSelection;
+		hilite $actualHilited;
+	}else{
+		warning "Nothing selected"; return;
+	}
+	
+}

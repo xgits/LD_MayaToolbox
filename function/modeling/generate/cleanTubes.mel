@@ -1,0 +1,20 @@
+global proc cleanTubes()
+{
+    string $selectedForClean[] = `ls -sl`;
+    polyCube -w 1 -h 1 -d 1 -sx 1 -sy 1 -sz 1 -ax 0 1 0 -cuv 4 -ch 1;
+    string $temp_polyCube[] =`ls -sl`;
+    select $selectedForClean;
+    select -add $temp_polyCube;
+    CombinePolygons;
+    string $temp_BeforeSeparate[] =`ls -sl`;    
+    SeparatePolygon;
+    string $temp_AfterSeparate[] =`ls -sl`;
+    delete $temp_AfterSeparate[`size $temp_AfterSeparate`-1];
+    DeleteHistory;
+    string $temp_father[]=`listRelatives -p $temp_AfterSeparate[0]`;
+    select $temp_BeforeSeparate;
+    ungroup;
+    catchQuiet(`delete $selectedForClean`);   
+    catchQuiet(`CombinePolygons`);   
+    catchQuiet(`DeleteHistory`);      
+}

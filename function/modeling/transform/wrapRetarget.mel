@@ -1,0 +1,73 @@
+global proc wrapRetarget(){
+    global string $Wrap_Cloth[];
+    global string $Wrap_Source[];
+    global string $Wrap_Target[];
+    string $windowName = "WrapRetargeter";
+    int $windowSize[] = {200, 200};
+    //check to see if this window already exists
+    if ( `window -exists $windowName` == 1) {
+    deleteUI $windowName;
+    }
+    window -title $windowName 
+    -widthHeight $windowSize[0] $windowSize[1] $windowName;
+    //Type your UI code from here
+    columnLayout -adjustableColumn true mainColumn;    
+        gridLayout -numberOfColumns 1 -cellHeight 50 -cellWidth 200;   
+                button 
+                    -ann ""
+                    -label "Load Cloth" 
+                    -command "wrapRetarget_loadCloth";
+                button 
+                    -label "Load Source" 
+                    -command "wrapRetarget_loadSource";       
+                button 
+                    -label "Load Target"
+                    -command "wrapRetarget_loadTarget";    
+                button
+                    -label "Transfer Cloth"  
+                    -command "wrapRetarget_tansfer";                
+        setParent..; 
+    window -edit -widthHeight $windowSize[0] $windowSize[1] $windowName;
+    showWindow $windowName;
+}
+
+global proc wrapRetarget_loadCloth()
+{
+    FreezeTransformations;
+    global string $Wrap_Cloth[];
+    $Wrap_Cloth = `ls -sl -o`;
+    if ($Wrap_Cloth[0] == ""){
+    print "Nothing Selected!";
+    }
+}
+
+global proc wrapRetarget_loadSource()
+{
+    FreezeTransformations;
+    global string $Wrap_Source[];
+    $Wrap_Source = `ls -sl -o`;
+    if ($Wrap_Source[0] == ""){
+    print "Nothing Selected!";
+    }
+}
+
+global proc wrapRetarget_loadTarget()
+{
+    FreezeTransformations;
+    global string $Wrap_Target[];
+    $Wrap_Target = `ls -sl -o`;
+    if ($Wrap_Target[0] == ""){
+    print "Nothing Selected!";
+    }
+}
+
+global proc wrapRetarget_tansfer()
+{
+    global string $Wrap_Cloth[];
+    global string $Wrap_Source[];
+    global string $Wrap_Target[];
+    select -r $Wrap_Cloth[0] $Wrap_Source[0];
+    CreateWrap;
+    blendShape -o "local" -n $Wrap_Target[0] $Wrap_Target[0] $Wrap_Source[0];
+    blendShape -edit -w 0 1 -w 1 0.1 $Wrap_Target[0];
+}

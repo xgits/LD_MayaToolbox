@@ -1,0 +1,6 @@
+global proc cleanNormal()
+{
+    polyNormalPerVertex -ufn true;
+    SetToFaceNormals;
+    DeleteHistory;
+}

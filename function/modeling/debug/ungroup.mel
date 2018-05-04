@@ -1,0 +1,40 @@
+global proc ungroup()
+{
+    string $relatives[];
+    string $objects[];
+    int $counter=1;
+    int $total=0;
+    int $iteration=0;
+    int $asize=`size($objects)`;
+    int $i;
+
+    while ($counter>0) 
+    {
+                delete -all -constructionHistory;
+                $counter=0;
+                $objects=`ls -l -type "transform" -dag`;
+                $asize=`size($objects)`;
+                $iteration++;
+                for ($i=0; $i<$asize; $i++) 
+                {
+                    if (`objExists $objects[$i]`)       // some object names will not be valid since it's parent does not exist anymore.
+                    {
+                        $relatives=`listRelatives -shapes $objects[$i]`;
+                        if (`nodeType $objects[$i]`=="transform" && size($relatives)==0)  // is it a group?
+                        {
+                            if (size(`listRelatives -type transform -allDescendents $objects[$i]`)==size(`listRelatives -allDescendents $objects[$i]`))  
+                                                                                                                                                    // is it a NULL group? (all of it's decendents are transforms)
+                                delete $objects[$i];                
+                            else
+                            {                               
+                                ungroup $objects[$i];
+                                $counter++;
+                                $total++;
+                            }
+                        }
+                    }
+                }
+                print ($counter+" Objects ungrouped in iteration "+$iteration+"\n");
+    }
+    print ("Total of "+$total+" objects ungrouped.\n");
+}

@@ -1,0 +1,7 @@
+global proc update()
+{
+    string $username = `getenv "USER"`;
+    global float $mayaVersion;
+    string $updatePath = "c:/Users/"+ $username +"/Documents/maya/scripts/LD_MayaToolbox/LDMT_install.bat";
+    system("load \"" + $updatePath + "\"");  
+}

@@ -1,0 +1,163 @@
+global proc braidGen(){
+    string $allSel[]=`ls -sl`;   //Select
+    string $curveSel[]=`filterExpand -sm 9`; //Filter Curve's name
+    //string $polySel[]=`filterExpand -sm 12`; //Filter Polymesh's name
+    //string $allSel_Size=size(`ls -sl -fl`); //Return Selected Count ( just in case )
+    string $DynamicCurve=`makeCurvesDynamic 2 { "1", "1", "1", "1", "0"}`; //First Step nHair - Make Curves Dynamic
+    string $follicle[] = `listConnections $curveSel[0]`;
+    string $follicleShape[] = `listRelatives -shapes $follicle[0]`;
+    string $follicleBraid = $follicleShape[0]+".braid";
+    string $follicleSampleDensity = $follicleShape[0]+".sampleDensity";
+    setAttr $follicleBraid 1;  // Set Braid to be TRUE
+    setAttr $follicleSampleDensity 100;  // Set SampleDensity to be smoother
+    select $curveSel[0]; 
+    //print $follicleShape;
+    string $hairSystem[] = `listConnections -type hairSystem $follicleShape[0]`;
+    string $hairSystemShape[]= `listRelatives -type hairSystem $hairSystem[0]`;
+    //string $hairSystemShape[] = `ls -type hairSystem`;
+    for( $i=0; $i < size($hairSystemShape); ++$i ){
+        if($i != 0){stringArrayRemoveAtIndex($i, $hairSystemShape);}
+    }
+    //print $hairSystemShape;
+    string $mainGroup = $curveSel[0] + "_HairSystemGrp";
+    group -n $mainGroup $hairSystemShape[0];
+    string $NucleusList[] = `listConnections -type nucleus $hairSystemShape[0]`;
+    string $thisNucleus = $NucleusList[0];
+    parent $thisNucleus $mainGroup;
+    select $curveSel[0]; 
+    int $hairSystemShapeLastNum = `size($hairSystemShape)`;
+    
+    string $hairSystemShapeClumpCount = $hairSystemShape[$hairSystemShapeLastNum-1] + ".hairsPerClump";
+    string $hairSystemShapeClumpWidth = $hairSystemShape[$hairSystemShapeLastNum-1] + ".clumpWidth";
+    string $hairSystemShapeClumpTaper = $hairSystemShape[$hairSystemShapeLastNum-1] + ".clumpWidthScale[1].clumpWidthScale_FloatValue";
+    string $hairSystemShapeClumpFlatness = $hairSystemShape[$hairSystemShapeLastNum-1] + ".clumpFlatness[0].clumpFlatness_FloatValue";
+    string $hairSystemShapeClumpCount = $hairSystemShape[$hairSystemShapeLastNum-1] + ".hairsPerClump";
+    string $ClumpWidthScale_pos1 = $hairSystemShape[$hairSystemShapeLastNum-1] + ".clumpWidthScale[0].clumpWidthScale_Position";
+    string $ClumpWidthScale_val1 = $hairSystemShape[$hairSystemShapeLastNum-1] + ".clumpWidthScale[0].clumpWidthScale_FloatValue";
+    string $ClumpWidthScale_pos2 = $hairSystemShape[$hairSystemShapeLastNum-1] + ".clumpWidthScale[1].clumpWidthScale_Position";
+    string $ClumpWidthScale_val2 = $hairSystemShape[$hairSystemShapeLastNum-1] + ".clumpWidthScale[1].clumpWidthScale_FloatValue";
+    string $ClumpWidthScale_pos3 = $hairSystemShape[$hairSystemShapeLastNum-1] + ".clumpWidthScale[2].clumpWidthScale_Position";
+    string $ClumpWidthScale_val3 = $hairSystemShape[$hairSystemShapeLastNum-1] + ".clumpWidthScale[2].clumpWidthScale_FloatValue";
+    string $ClumpWidthScale_pos4 = $hairSystemShape[$hairSystemShapeLastNum-1] + ".clumpWidthScale[3].clumpWidthScale_Position";
+    string $ClumpWidthScale_val4 = $hairSystemShape[$hairSystemShapeLastNum-1] + ".clumpWidthScale[3].clumpWidthScale_FloatValue";
+    
+    setAttr $ClumpWidthScale_pos1 0;
+    setAttr $ClumpWidthScale_val1 0;
+    setAttr $ClumpWidthScale_pos2 0.001;
+    setAttr $ClumpWidthScale_val2 1;
+    setAttr $ClumpWidthScale_pos3 0.999;
+    setAttr $ClumpWidthScale_val3 1;
+    setAttr $ClumpWidthScale_pos4 0.999;
+    setAttr $ClumpWidthScale_val4 0;
+        
+    setAttr $hairSystemShapeClumpCount 3;
+    setAttr $hairSystemShapeClumpWidth 3;
+    AssignBrushToHairSystem;
+    string $pfxHair[] = `listConnections $hairSystemShape[$hairSystemShapeLastNum-1]`;
+    
+    int $pfxHair_Size = `size($pfxHair)`;
+    string $pfxHairLast = $pfxHair[$pfxHair_Size-1];
+    parent $pfxHairLast $mainGroup;
+    select $pfxHairLast;  // select last one
+    doPaintEffectsToCurve(1);
+    int $pfxHairStringCount = `size($pfxHairLast)`;
+    string $pfxHairLastNum = `substring $pfxHairLast 8 $pfxHairStringCount`;
+    string $pfxHairShapeCurves = "pfxHairShape" + $pfxHairLastNum + "Curves";
+    
+    parent $pfxHairShapeCurves $mainGroup;
+    string $follicleConnectedCurve[] = `listConnections -type nurbsCurve $follicleShape[0]`;
+    //print $follicleConnectedCurve;
+    for($originCurve in $follicleConnectedCurve){
+        string $objects[] = `ls -l $originCurve`;
+        string $parentList[];
+        string $result = tokenize($objects[0], "|", $parentList);
+        parent $parentList[0] $mainGroup;
+    }
+    
+    select $pfxHairShapeCurves;
+    python("import tubeGen");
+    string $getList[] = python("tubeGen.tubeGen('" + $curveSel[0] + "')");
+    print $getList;
+
+    string $curveSel0 = $curveSel[0];
+    string $Tubes[] = `ls -sl`;
+    select $curveSel0;
+
+        string $Tube0_LengthDiv = $Tubes[0]+".lengthDivisions";
+        string $Tube1_LengthDiv = $Tubes[1]+".lengthDivisions";
+        string $Tube2_LengthDiv = $Tubes[2]+".lengthDivisions";
+
+        string $Tube0_WidthDiv = $Tubes[0]+".widthDivisions";
+        string $Tube1_WidthDiv = $Tubes[1]+".widthDivisions";
+        string $Tube2_WidthDiv = $Tubes[2]+".widthDivisions";
+
+        string $Tube0_Width = $Tubes[0]+".width";
+        string $Tube1_Width = $Tubes[1]+".width";
+        string $Tube2_Width = $Tubes[2]+".width";
+
+        string $Tube0_Taper = $Tubes[0]+".taper";
+        string $Tube1_Taper = $Tubes[1]+".taper";
+        string $Tube2_Taper = $Tubes[2]+".taper";
+ 
+        string $lengthDivisionsControl = $curveSel0 +".lengthDivisions"; 
+        string $widthDivisionsControl = $curveSel0 +".widthDivisions";
+        string $braidWidthControl = $curveSel0 +".braidWidth";
+        string $braidTaperControl = $curveSel0 +".braidTaper";
+        string $flatnessControl = $curveSel0 +".flatness";
+        string $perbraidWidthControl = $curveSel0 +".perbraidWidth";
+        string $perBraidTaperControl = $curveSel0 +".perbraidtaper";
+
+        if(`attributeExists "braidWidth" $curveSel0`)
+        {
+        deleteAttr $lengthDivisionsControl;
+        deleteAttr $widthDivisionsControl;
+        deleteAttr $braidWidthControl;
+        deleteAttr $braidTaperControl;
+        deleteAttr $flatnessControl;
+        deleteAttr $perbraidWidthControl;
+        deleteAttr $perBraidTaperControl;
+        }
+    addAttr -ln "braidWidth" -k 1 -at  double -h 0 -min 0 -dv 1 $curveSel0;
+    addAttr -ln "braidTaper" -k 1 -at  double -h 0 -min 0 -dv 1 $curveSel0;
+    addAttr -ln "flatness" -k 1 -at  double -h 0 -max 1 -dv 0 $curveSel0;
+    addAttr -ln "lengthDivisions" -k 1 -at long -h 0 -min 0 -dv 100 $curveSel0;
+    addAttr -ln "widthDivisions" -k 1 -at long -h 0 -min 0 -dv 7 $curveSel0;  
+    addAttr -ln "perbraidWidth" -k 1 -at  double -h 0 -min 0 -dv 0.5 $curveSel0;
+    addAttr -ln "perbraidtaper" -k 1 -at  double -h 0 -min 0 -dv 1 $curveSel0;
+
+        expression -s ($hairSystemShapeClumpWidth+"="+$braidWidthControl);
+        expression -s ($hairSystemShapeClumpTaper+"="+$braidTaperControl);
+        expression -s ($hairSystemShapeClumpFlatness+"="+$flatnessControl);
+        
+        expression -s ($Tube0_LengthDiv+"="+$lengthDivisionsControl);
+        expression -s ($Tube1_LengthDiv+"="+$lengthDivisionsControl);
+        expression -s ($Tube2_LengthDiv+"="+$lengthDivisionsControl);
+
+        expression -s ($Tube0_WidthDiv+"="+$widthDivisionsControl);
+        expression -s ($Tube1_WidthDiv+"="+$widthDivisionsControl);
+        expression -s ($Tube2_WidthDiv+"="+$widthDivisionsControl);
+
+        expression -s ($Tube0_Width+"="+$perbraidWidthControl);
+        expression -s ($Tube1_Width+"="+$perbraidWidthControl);
+        expression -s ($Tube2_Width+"="+$perbraidWidthControl);
+
+        expression -s ($Tube0_Taper+"="+$perBraidTaperControl);
+        expression -s ($Tube1_Taper+"="+$perBraidTaperControl);
+        expression -s ($Tube2_Taper+"="+$perBraidTaperControl);
+
+    hide $mainGroup;
+    ungroup -w -r $follicle[0];
+    parent $mainGroup $curveSel0;
+    parent $getList[0] $curveSel0;
+    parent $getList[1] $curveSel0;
+
+    select $Tubes[0];
+    python("f_sourceMel(PATH_LDMT_Func_Mod_debug,\"fixReverse\")");
+    select $Tubes[1];
+    python("f_sourceMel(PATH_LDMT_Func_Mod_debug,\"fixReverse\")");
+    select $Tubes[2];
+    python("f_sourceMel(PATH_LDMT_Func_Mod_debug,\"fixReverse\")");
+
+    select $curveSel0;
+}
+

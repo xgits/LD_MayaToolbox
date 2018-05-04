@@ -1,0 +1,35 @@
+/*
+Auther: Liu Dian
+github: https://github.com/xgits/LD_MayaToolbox
+Email: xgits@outlook.com
+Website: www.xgits.com
+*/
+
+global proc turboSmooth()
+{
+    int $mods = `getModifiers`;
+    resetPolySelectConstraint;
+    toggleSelMode; 
+    selectMode -object;
+    string $mesh[] = `ls -sl -o`;
+    select $mesh;
+    ConvertSelectionToEdges;
+    polySelectConstraint -m 3 -t 0x8000 -sm 1;
+    sets -name "LDTurboSmoothQS";
+    string $currentSel1[] = `ls -sl`;
+    if($currentSel1[0]!="")
+    {polyCrease -value 1;}
+    select $mesh;
+    polySmooth  -mth 0 -sdt 2 -ovb 2 -ofb 3 -ofc 1 -ost 1 -ocr 1 -dv 1 -bnr 1 -c 0 -kb 0 -ksb 1 -khe 1 -kt 0 -kmb 0 -suv 1 -peh 1 -sl 1 -dpe 1 -ps 0.1 -ro 1 -ch 1 $mesh;
+    select LDTurboSmoothQS;
+    string $currentSel2[] = `ls -sl`;
+    if($currentSel2[0]!="")
+    {
+    polySoftEdge -a 0 -ch 1;
+    }
+    if($mods == 4)
+    {polyCrease -value 1;}
+    polySelectConstraint -m 0 -dis;
+    select $mesh;
+    delete LDTurboSmoothQS;
+}

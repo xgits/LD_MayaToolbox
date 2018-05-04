@@ -1,0 +1,45 @@
+global proc selectEveryNEdgeTool()
+{
+    int $prevVal;
+    int $firstSelectionMode;
+    string $radioButtons1;
+    string $toDel;
+    if(`window -q -ex MBSelectEvery`==1)
+    {    
+        deleteUI MBSelectEvery;
+    }
+    $prevVal = 2;
+    $firstSelectionMode = 1;    
+string $window = `window -title "Select Every N Edge"
+    -widthHeight 310 160 MBSelectEvery`;
+    window -edit -s 0 -widthHeight 310 160 MBSelectEvery;
+    string $form = `formLayout -numberOfDivisions 100`;
+    $radioButtons1 = `radioButtonGrp -numberOfRadioButtons 4 -vr -label "Convert selection to: " -labelArray4 "edgeLoop" "edgeRing" "edgeBorder" "edgeLoopOrBorder" -select $firstSelectionMode`;
+    string $tFrEv = `text -label "    For every: " -align "left"`;
+    $toDel = `intField -v $prevVal -visible 1 -min 1 -step 1 -w 190`;
+    string $tEdg = `text -label " edge" -align "left"`;
+    string $MBbtn = `button -label "Apply" -command ("int $selectMode = `radioButtonGrp -q -select "+$radioButtons1+"`;string $selections[] = {\"edgeLoop\", \"edgeRing\", \"edgeBorder\", \"edgeLoopOrBorder\"};int $vToSel = `intField -q -v " + $toDel+ "`;polySelectEdgesEveryN $selections[$selectMode-1]  $vToSel ;") -rs 1 -w 300 -h 40`;
+
+    formLayout -edit
+    -attachForm         $tFrEv      "top"       10
+    -attachForm         $tFrEv      "left"      5
+    -attachControl      $toDel      "left"      5   $tFrEv
+    -attachForm     $toDel      "top"       5 
+    -attachControl      $tEdg       "left"      5   $toDel
+    -attachForm     $tEdg       "top"       10
+    
+    -attachControl      $radioButtons1 "top"    10  $tFrEv
+    -attachForm     $radioButtons1 "left"       5 
+    -attachControl      $MBbtn      "top"   5   $radioButtons1
+    -attachForm     $MBbtn      "left"      5
+
+    $form;
+    
+    
+showWindow MBSelectEvery;
+
+        int $selectMode = `radioButtonGrp -q -select $radioButtons1`;
+        string $selections[] = {"edgeLoop", "edgeRing", "edgeBorder", "edgeLoopOrBorder"};
+        int $vToSel = `intField -q -v $toDel`;
+        polySelectEdgesEveryN $selections[$selectMode-1]  $vToSel ;
+}

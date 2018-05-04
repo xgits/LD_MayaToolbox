@@ -1,0 +1,12 @@
+global proc resetPref()
+{
+    string $username = `getenv "USER"`;
+    string $PATH_debug = "c:/Users/"+ $username + "/Documents/maya/scripts/LD_MayaToolbox/function/modeling/debug";
+    float $MAYAVERSION = `about -v`;
+    string $path_prefBat =  $PATH_debug +"/prefmanage/get_userprefs_"+$MAYAVERSION+".bat";
+    system("load \"" + $path_prefBat + "\"");  
+//open maya
+    string $path_mayaLoc =  `getenv "MAYA_LOCATION"`;
+    string $path_maya = $path_mayaLoc+"/bin/maya.exe";
+    system("load \"" + $path_maya + "\"");
+}

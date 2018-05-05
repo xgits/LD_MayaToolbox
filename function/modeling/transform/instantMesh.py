@@ -3,7 +3,7 @@ import getpass
 import tempfile
 import os
 import maya.cmds as cmds
-
+import maya.mel as mel
 # Replace this with UI / config file
 PATH_MAYA_app_dir = mel.eval("getenv MAYA_APP_DIR")
 inst_mesh_path = PATH_MAYA_app_dir+"/scripts/LD_MayaToolbox/exe/instantMesh.exe"

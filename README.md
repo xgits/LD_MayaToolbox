@@ -44,7 +44,7 @@ Installation:
 
     B. 下载压缩包, 解压缩后把 LD_MayaToolbox 整个文件夹复制到 C:\Users\%username%\Documents\maya\scripts\
         然后输入下列python代码 作为按钮启动:
-        ```
+        ```python
         import maya.cmds as cmds 
         import getpass
         import sys

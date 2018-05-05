@@ -17,11 +17,17 @@ Installation:
 
     Download ZIP or clone the source project and then:
 
-    First method (auto install): If your scripts folder is in C:\ , Just double click LDMT_install.bat inside the folder, you are good to go. Start maya it will autoload.
+    First method: auto install (recommended): If your scripts folder is in C:\ , Just double click LDMT_install.bat inside the 
+        folder, you are good to go. Start maya it will autoload.Special case: If your scripts folder (like C:\Users\%username%\
+        Documents\maya\scripts\) is customized to another directory, please open customPath.txt and replace content in it to 
+        your path, and double click customInstall.bat.
 
-    Second method (mannual install): Manually rename the unzipped folder and rename it to LD_MayaToolbox, copy LD_MayaToolbox folder to C:\Users\%username%\Documents\maya\scripts\ and copy the userSetup.py in LD_MayaToolbox to C:\Users\%username%\Documents\maya\scripts\ as well if you want to load on startup.
+    Second method: mannual install: Manually rename the unzipped folder and rename it to LD_MayaToolbox, copy LD_MayaToolbox 
+    folder to C:\Users\%username%\Documents\maya\scripts\ and copy the userSetup.py in LD_MayaToolbox to (scripts folder like 
+    C:\Users\%username%\Documents\maya\scripts\) as well if you want to load on startup.
 
-    If you choose to not autoload this tool, open maya and copy and paste it in script editor as python, run it or add this script to shelf by middle click and drag.
+    If you choose to not autoload this tool, open maya and copy and paste it in script editor as python, run it or add this 
+    script to shelf by middle click and drag.
 
     ```python
     import maya.cmds as cmds 
@@ -45,9 +51,12 @@ Installation:
 安装方法:
     下载ZIP压缩包, 或者github项目, 然后:
 
-    第一种 (自动安装):  双击 LDMT_install.bat, 启动maya 就会自动启动本工具.
+    第一种 自动安装 (推荐): 直接双击 LDMT_install.bat, 启动maya 就会自动启动本工具. 
+                          特殊情况: 如果你的C:\Users\%username%\Documents\maya\scripts\ 文件夹不在这个地址, 
+                          请打开customPath.txt, 然后把里面的地址替换成你的脚本地址, 点击customInstall即可安装.
+                    
 
-    第二种 (手动安装): 下载压缩包, 解压缩后重命名为 LD_MayaToolobx ,将LD_MayaToolbox复制到    
+    第二种 手动安装: 下载压缩包, 解压缩后重命名为 LD_MayaToolobx ,将LD_MayaToolbox复制到    
     C:\Users\%username%\Documents\maya\scripts\. 然后将LD_MayaToolbox里的userSetup.py复制到
     C:\Users\%username%\Documents\maya\scripts\, 如果你需要自动启动.
         

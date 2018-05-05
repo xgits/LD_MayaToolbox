@@ -1,5 +1,5 @@
 # LD_MayaToolbox
-This is a maya toolbox written by Liu Dian.
+This is a maya toolbox written by Liu Dian. 中文安装步骤请往下看.
 
 There are currently two version of this tool:
     
@@ -17,17 +17,17 @@ Installation:
 
     Download ZIP or clone the source project and then:
 
-    First method: auto install (recommended): If your scripts folder is in C:\ , Just double click LDMT_install.bat inside the 
-        folder, you are good to go. Start maya it will autoload.Special case: If your scripts folder (like C:\Users\%username%\
-        Documents\maya\scripts\) is customized to another directory, please open customPath.txt and replace content in it to 
-        your path, and double click customInstall.bat.
+    First method: auto install (recommended): If your scripts folder is in C:\ , Just double click LDMT_install.bat 
+    inside the folder, you are good to go. Start maya it will autoload.Special case: If your scripts folder 
+    (like C:\Users\%username%\Documents\maya\scripts\) is customized to another directory, please open customPath.txt
+    and replace content in it to your path, and double click customInstall.bat.
 
-    Second method: mannual install: Manually rename the unzipped folder and rename it to LD_MayaToolbox, copy LD_MayaToolbox 
-    folder to C:\Users\%username%\Documents\maya\scripts\ and copy the userSetup.py in LD_MayaToolbox to (scripts folder like 
-    C:\Users\%username%\Documents\maya\scripts\) as well if you want to load on startup.
+    Second method: mannual install: Manually rename the unzipped folder and rename it to LD_MayaToolbox, copy 
+    LD_MayaToolbox folder to C:\Users\%username%\Documents\maya\scripts\ and copy the userSetup.py in LD_MayaToolbox 
+    to (scripts folder like  C:\Users\%username%\Documents\maya\scripts\) as well if you want to load on startup.
 
-    If you choose to not autoload this tool, open maya and copy and paste it in script editor as python, run it or add this 
-    script to shelf by middle click and drag.
+    If you choose to not autoload this tool, open maya and copy and paste it in script editor as python, run it or add 
+    this script to shelf by middle click and drag.
 
     ```python
     import maya.cmds as cmds 

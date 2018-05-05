@@ -51,4 +51,5 @@ Installation:
         username = getpass.getuser()
         sys.path.append('c:/Users/'+username+'/Documents/maya/scripts/LD_MayaToolbox')
         cmds.evalDeferred("from LDMT import *")
-        cmds.evalDeferred("LDMT()") ```
+        cmds.evalDeferred("LDMT()") 
+        ```

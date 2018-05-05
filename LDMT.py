@@ -12,8 +12,6 @@ import subprocess
 import sys
 import os
 import json
-import urllib
-import urllib2
 # comment key words:
 # CUSTOMIZABLE
 
@@ -46,8 +44,9 @@ if(OS != "Windows"):
 # environment path
 # naming convension:
 # all capital presenting key words, captalize first means abbriviation, lower means complete path.
-PATH_Doc_maya = "C:/Users/" + USER_name + "/Documents/maya" # document maya path!
-PATH_Doc_maya_scripts = PATH_Doc_maya + "/scripts"
+
+PATH_MAYA_app_dir = mel.eval("getenv MAYA_APP_DIR")
+PATH_Doc_maya_scripts = PATH_MAYA_app_dir + "/scripts"
 
 PATH_LDMT                    = PATH_Doc_maya_scripts   + "/LD_MayaToolbox" # CUSTOMIZABLE: LDMT path! You can customize if you want
 PATH_LDMT_plugin             = PATH_LDMT               + "/plugin"
@@ -511,7 +510,7 @@ def f_command(command):
     elif command == "Curve to Tube" : f_tubeGen()
     elif command == "Curve to Rope" : f_ropeGen()
     elif command == "Curve to Braid" : f_braidGen()
-    elif command == "Curve to Spiral" : f_sourceMel(PATH_LDMT_Func_Mod_generate, "spiralGen")
+    elif command == "Curve to Spiral" : f_spiralGen()
 
     elif command == "Curve to Instances" : f_instanceGen()
     elif command == "Curve to Seams" : f_seamsEasy("seams")
@@ -548,8 +547,8 @@ def f_command(command):
     elif command == "Display Vert ID" : mel.eval("ToggleVertIDs")
     elif command == "Display Polycount" : mel.eval("TogglePolyCount")
     elif command == "Reset Display" : mel.eval("PolyDisplayReset")
-    elif command == "Cleanup Plugins" : f_sourceMel(PATH_LDMT_Func_Mod_debug,"cleanupPlugin")
-    elif command == "Reset Preferences" : f_sourceMel(PATH_LDMT_Func_Mod_debug,"resetPref")
+    elif command == "Cleanup Plugins" : f_cleanupPlugin()
+    elif command == "Reset Preferences" : f_resetPref()
     
     elif command == "Plugin Manager" : mel.eval("PluginManager")
     elif command == "Preferences Setting" : mel.eval("PreferencesWindow")
@@ -714,6 +713,9 @@ def f_tubeGen():
 def f_ropeGen():
     mods = cmds.getModifiers()
     if mods==0:
+        pluginPath =PATH_LDMT_plugin + "/curve2spiral.py"
+        if cmds.pluginInfo(pluginPath,q=1,l=1) !=1: 
+            cmds.loadPlugin (pluginPath)
         f_sourceMel(PATH_LDMT_Func_Mod_generate, "ropeGen")
     elif mods==1:
         pluginPath ="curveWarp"
@@ -727,7 +729,17 @@ def f_braidGen():
     for i in range(curveCount):
         cmds.select(sel[i],r=1)
         f_sourceMel(PATH_LDMT_Func_Mod_generate, "braidGen")
-    
+
+def f_spiralGen():
+    pluginPath =PATH_LDMT_plugin + "/curve2spiral.py"
+    if cmds.pluginInfo(pluginPath,q=1,l=1) !=1: 
+        cmds.loadPlugin (pluginPath)
+    sel = cmds.ls(sl=1)
+    curveCount = len(sel)
+    for i in range(curveCount):
+        cmds.select(sel[i],r=1)
+        f_sourceMel(PATH_LDMT_Func_Mod_generate, "braidGen")
+
 def f_instanceGen():
     pluginPath =PATH_LDMT_plugin + "/instanceAlongCurve.py"
     if cmds.pluginInfo (pluginPath,q=1,l=1) !=1: 
@@ -759,6 +771,13 @@ def f_keepHS():
 def f_deleteNameSpace():
     import deleteNamespace
     deleteNamespace.remove_namespaces_from_selection()
+def f_cleanupPlugin():
+    import cleanupPlugin
+    cleanupPlugin.cleanupPlugin()
+
+def f_resetPref():
+    import resetPref
+    resetPref.resetPref()
 
 def f_showSearch():
     import vt_quicklauncher

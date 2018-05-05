@@ -5,8 +5,8 @@ import os
 import maya.cmds as cmds
 
 # Replace this with UI / config file
-username = getpass.getuser()
-inst_mesh_path = "c:/Users/"+username+"/Documents/maya/scripts/LD_MayaToolbox/exe/instantMesh.exe"
+PATH_MAYA_app_dir = mel.eval("getenv MAYA_APP_DIR")
+inst_mesh_path = PATH_MAYA_app_dir+"/scripts/LD_MayaToolbox/exe/instantMesh.exe"
 
 def LD_Instamesh(face_count=None):
     if not os.path.exists(inst_mesh_path):

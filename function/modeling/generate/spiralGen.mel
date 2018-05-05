@@ -1,8 +1,6 @@
 global proc spiralGen()
 {
     string $userName = `getenv "USER"`;
-    string $PLUGINPATH = "C:/Users/" + $userName + "/Documents/maya/scripts/LD_MayaToolbox/plugin/curve2spiral.py";
-    if (`pluginInfo -q -l "curve2spiral"`!=1) loadPlugin ( $PLUGINPATH );
     string $selectedCurve[] = `ls -sl`;
     if (size($selectedCurve) > 0){
     string $shapes[] = `listRelatives -children $selectedCurve[0]`;

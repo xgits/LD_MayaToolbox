@@ -5,7 +5,6 @@ global proc ropeGen(){
     string $Tube2;
     string $RopeCurve;
     string $userName = `getenv "USER"`;
-    loadPlugin ("C:/Users/"+$userName+"/Documents/maya/scripts/LD_MayaToolbox/plugin/curve2spiral.py");
     string $selectedCurve[] = `ls -sl`;
     int $i = 0;
     for ($i =0;size($selectedCurve) > 0 && $i< size($selectedCurve);$i++){

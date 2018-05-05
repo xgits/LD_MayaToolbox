@@ -14,20 +14,24 @@ There are currently two version of this tool:
     Free to use both version for commercial or personal use.
 
 Installation:
-    
-    A. Just double click LDMT_install.bat, you are good to go.
 
-    B. Mannually copy LD_MayaToolbox to C:\Users\% your user name %\Documents\maya\scripts\
+    Download ZIP or clone the source project and then:
 
-        Then type in python scripts below line by line:
+    First method (auto install): If your scripts folder is in C:\ , Just double click LDMT_install.bat inside the folder, you are good to go. Start maya it will autoload.
 
-        import maya.cmds as cmds 
-        import getpass
-        import sys
-        username = getpass.getuser()
-        sys.path.append('c:/Users/'+username+'/Documents/maya/scripts/LD_MayaToolbox')
-        cmds.evalDeferred("from LDMT import *")
-        cmds.evalDeferred("LDMT()") 
+    Second method (mannual install): Manually rename the unzipped folder and rename it to LD_MayaToolbox, copy LD_MayaToolbox folder to C:\Users\%username%\Documents\maya\scripts\ and copy the userSetup.py in LD_MayaToolbox to C:\Users\%username%\Documents\maya\scripts\ as well if you want to load on startup.
+
+    If you choose to not autoload this tool, open maya and copy and paste it in script editor as python, run it or add this script to shelf by middle click and drag.
+
+    ```python
+    import maya.cmds as cmds 
+    import maya.mel as mel
+    import sys
+    PATH_MAYA_app_dir = mel.eval("getenv MAYA_APP_DIR")
+    sys.path.append(PATH_MAYA_app_dir+'/scripts/LD_MayaToolbox')
+    cmds.evalDeferred("from LDMT import *")
+    cmds.evalDeferred("LDMT()") 
+    ```
         
 本工具有两个版本:
     
@@ -36,20 +40,24 @@ Installation:
 
     2.其二是gumroad上的版本, 专业版有一些自定义UI的功能. 如果你对上传使用信息有顾虑或者仅仅是出于善意帮助我, 请购买专业版.
 
-    两个版本都可免费用于商业和个人使用.
+    两个版本都可用于商业和个人使用.
 
 安装方法:
+    下载ZIP压缩包, 或者github项目, 然后:
 
-    A. 双击 LDMT_install.bat 
+    第一种 (自动安装):  双击 LDMT_install.bat, 启动maya 就会自动启动本工具.
 
-    B. 下载压缩包, 解压缩后把 LD_MayaToolbox 整个文件夹复制到 C:\Users\%username%\Documents\maya\scripts\
-        然后输入下列python代码 作为按钮启动:
-```python
-import maya.cmds as cmds 
-import getpass
-import sys
-username = getpass.getuser()
-sys.path.append('c:/Users/'+username+'/Documents/maya/scripts/LD_MayaToolbox')
-cmds.evalDeferred("from LDMT import *")
-cmds.evalDeferred("LDMT()") 
-```
+    第二种 (手动安装): 下载压缩包, 解压缩后重命名为 LD_MayaToolobx ,将LD_MayaToolbox复制到    
+    C:\Users\%username%\Documents\maya\scripts\. 然后将LD_MayaToolbox里的userSetup.py复制到
+    C:\Users\%username%\Documents\maya\scripts\, 如果你需要自动启动.
+        
+    如果你选择不自动启动, 打开maya之后请输入以下 python代码 中键拖到工具架, 作为按钮启动:
+    ```python
+    import maya.cmds as cmds 
+    import maya.mel as mel
+    import sys
+    PATH_MAYA_app_dir = mel.eval("getenv MAYA_APP_DIR")
+    sys.path.append(PATH_MAYA_app_dir+'/scripts/LD_MayaToolbox')
+    cmds.evalDeferred("from LDMT import *")
+    cmds.evalDeferred("LDMT()") 
+    ```

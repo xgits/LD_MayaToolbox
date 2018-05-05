@@ -43,7 +43,7 @@ Installation:
     A. 双击 LDMT_install.bat 
 
     B. 下载压缩包, 解压缩后把 LD_MayaToolbox 整个文件夹复制到 C:\Users\%username%\Documents\maya\scripts\
-
+'''
         然后输入下列python代码 作为按钮启动:
         import maya.cmds as cmds 
         import getpass
@@ -51,4 +51,4 @@ Installation:
         username = getpass.getuser()
         sys.path.append('c:/Users/'+username+'/Documents/maya/scripts/LD_MayaToolbox')
         cmds.evalDeferred("from LDMT import *")
-        cmds.evalDeferred("LDMT()") 
+        cmds.evalDeferred("LDMT()") '''

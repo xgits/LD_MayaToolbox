@@ -18,7 +18,7 @@ import json
 ################################ Define Globals Start ###############################
 
 # common stuff
-LDMT_version             = "0.1" # LDMT's child variable are lowercase with "_"
+LDMT_version             = "0.2" # LDMT's child variable are lowercase with "_"
 LDMT_UI_title            = "LD Maya Toolbox" + " " + LDMT_version
 LDMT_UI_window           = "LDMT_UI_window"
 LDMT_UI_form             = "LDMT_UI_form"

@@ -9,12 +9,12 @@ def add2Shelf():
 
     PATH_MAYA_app_dir = mel.eval("getenv MAYA_APP_DIR")
     imagePath = PATH_MAYA_app_dir+ "/scripts/LD_MayaToolbox/pref/icon/LD_MayaToolbox.png"
-    cmds.shelfButton(ann="Launch LD MayaToolbox",l=title,image1=imagePath,command = 'add2Shelf_command()')
-
-def add2Shelf_command():
-    import maya.cmds as cmds
-    import maya.mel as mel
-    PATH_MAYA_app_dir = mel.eval("getenv MAYA_APP_DIR")
-    sys.path.append(PATH_MAYA_app_dir+'/scripts/LD_MayaToolbox')
-    cmds.evalDeferred("from LDMT import *")
-    cmds.evalDeferred("LDMT()") 
+    cmds.shelfButton(ann="Launch LD MayaToolbox",l=title,image1=imagePath,
+    command='import maya.cmds as cmds\n\
+import maya.mel as mel\n\
+PATH_MAYA_app_dir = mel.eval("getenv MAYA_APP_DIR")\n\
+sys.path.append(PATH_MAYA_app_dir+"/scripts/LD_MayaToolbox")\n\
+cmds.evalDeferred("import LDMT")\n\
+cmds.evalDeferred("reload(LDMT)")\n\
+cmds.evalDeferred("from LDMT import *")\n\
+cmds.evalDeferred("LDMT()") ')

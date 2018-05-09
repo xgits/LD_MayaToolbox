@@ -104,23 +104,23 @@ lightYellow  = [ 1.00 , 0.91 , 0.58 ]
 PM_startTime = cmds.timerX()
 PM_timeAdder = 0
 
+#init syspath
+sizeOfPaths = len(PATH_SOURCE_ALL)
+for i in range(sizeOfPaths):
+    if not PATH_SOURCE_ALL[i] in sys.path:
+        sys.path.append(PATH_SOURCE_ALL[i])
+
+from checkUVBleed import *
 ################################ Define Globals End ###############################
 
 # all defined function is started with f_
 ################################ Define Main Functions Start ###############################
 
 def LDMT():
-    f_sys_path_init()
     f_UI_init()
     f_UI_create()
     f_hotkey_init()
     f_plugin_init()
-
-def f_sys_path_init():
-    sizeOfPaths = len(PATH_SOURCE_ALL)
-    for i in range(sizeOfPaths):
-        if not PATH_SOURCE_ALL[i] in sys.path:
-            sys.path.append(PATH_SOURCE_ALL[i])
             
 def f_UI_init():
     if MAYA_version_float >= 2016 and cmds.dockControl(LDMT_UI_dock, ex=1):
@@ -129,7 +129,7 @@ def f_UI_init():
         cmds.deleteUI(LDMT_UI_window)
 
 def f_UI_create():
-    cmds.window(LDMT_UI_window, sizeable=0)
+    cmds.window(LDMT_UI_window, sizeable=1)
     cmds.formLayout(LDMT_UI_form)
 
     if MAYA_version_float >= 2016:
@@ -368,7 +368,7 @@ def f_UI_create():
     cmds.button(ann="Vertice normal display.", 
                 bgc=darkGrey, l="VertNm", c= 'f_command("Display Vert Normal")') 
     cmds.button(ann="Face normal Dispaly.", 
-                bgc=darkGrey, l="FaceNm", c= 'f_command("Display Face Noraml")') 
+                bgc=darkGrey, l="FaceNm", c= 'f_command("Display Face Normal")') 
     cmds.button(ann="Ungroup selected groups.", 
                 bgc=darkGrey, l="Triangle", c= 'f_command("Display Triangle")') 
     cmds.button(ann="Texture border display.", 
@@ -428,11 +428,10 @@ def f_UI_create():
     cmds.gridLayout(numberOfColumns = 2, cellHeight = LDMT_UI_cell_height, cellWidth=LDMT_UI_width/4)
     cmds.button(ann="Predefined export.", 
                 bgc=darkerGrey, l="Export", c= 'f_command("Predefined Export")') 
-    cmds.optionMenu(ann="Choose format to output.",
+    cmds.optionMenu("exportFormat",ann="Choose format to output.",
                 bgc=black,changeCommand="print #1")
     cmds.menuItem(l="OBJ")
     cmds.menuItem(l="FBX")
-    cmds.menuItem(l="MAX")
     cmds.menuItem(l="UE4")
     cmds.setParent("..")
     cmds.setParent("..")
@@ -500,8 +499,8 @@ def f_command(command):
     elif command == "Instant Meshes Function" : f_instantMeshes()
 
     # select
-    elif command == "Select Hard Edges" : f_sourceMel(PATH_LDMT_Func_Mod_select,"selectHardEdge")
-    elif command == "Select UV Borders" : f_sourceMel(PATH_LDMT_Func_Mod_select,"selectUVEdgeBorder")
+    elif command == "Select Hard Edges" : f_selectHardEdges()
+    elif command == "Select UV Borders" : f_selectUVEdgeBorders()
     elif command == "Cam Select": f_toggleCamSelect()
     elif command == "N Edge Selector" : f_selectEveryNEdge()
 
@@ -523,7 +522,7 @@ def f_command(command):
     elif command == "UV In" : f_sourceMel(PATH_LDMT_Func_Mod_uv, 'moveUVIn')
     elif command == "UV Out" : f_sourceMel(PATH_LDMT_Func_Mod_uv, 'moveUVOut') 
     elif command == "UV Deluxe" : f_UVDeluxe()
-    elif command == "Check UV Bleed" : f_sourceMel(PATH_LDMT_Func_Mod_transform,"delHistory") # to be done
+    elif command == "Check UV Bleed" : f_checkUVBleed() # to be done
     
     # trial
     elif command == "Face Transfer" : f_faceTransfer()
@@ -557,10 +556,10 @@ def f_command(command):
     elif command == "Namespace Editor" : mel.eval("NamespaceEditor")
     elif command == "Hotkey Editor" : mel.eval("HotkeyPreferencesWindow")
     
-    elif command == "Open Folder" : f_sourceMel(PATH_LDMT_Func_Mod_debug,"openFolder")
-    elif command == "Predefined Export" : f_sourceMel(PATH_LDMT_Func_Mod_transform,"delHistory") # to be done
+    elif command == "Open Folder" : f_openFolder()
+    elif command == "Predefined Export" : f_fastExport() # to be done
     
-    elif command == "Add to Shelf" : f_sourceMel(PATH_LDMT_Func_Mod_info,"add2Shelf")
+    elif command == "Add to Shelf" : f_add2Shelf()
     elif command == "Command Search" : f_showSearch()
     elif command == "Feedback" : f_showWebsite('https://github.com/xgits/LD_MayaToolbox')
     elif command == "Help Mannual" : f_showWebsite('http://www.xgits.com')
@@ -629,6 +628,14 @@ def f_copy2Vertex():
         copy2VertexPy.copy2VertexPy()
     else:
         f_sourceMel(PATH_LDMT_Func_Mod_transform,"copy2Vertex")
+
+def f_selectHardEdges():
+    import selectHardEdges
+    selectHardEdges.selectHardEdges()
+
+def f_selectUVEdgeBorders():
+    import selectUVEdgeBorders
+    selectUVEdgeBorders.selectUVEdgeBorders()
 
 def f_queryToggleCamSelect():
     IfUsedCamSelect = cmds.selectPref(q=1,useDepth=1)
@@ -759,7 +766,9 @@ def f_seamsEasy(command):
 def f_UVDeluxe():
     from UVDeluxe import uvdeluxe
     uvdeluxe.createUI()
-
+def f_checkUVBleed():
+    checkUVBleed_ui()
+    
 def f_faceTransfer():
     import faceTransfer.ui
     faceTransfer.ui.show()
@@ -778,7 +787,17 @@ def f_cleanupPlugin():
 def f_resetPref():
     import resetPref
     resetPref.resetPref()
+def f_openFolder():
+    import openFolder
+    openFolder.openFolder()
+def f_fastExport():
+    exportFormat = cmds.optionMenu("exportFormat",q=1,v=1)
+    import fastExport
+    fastExport.fastExport(exportFormat)
 
+def f_add2Shelf():
+    import add2Shelf
+    add2Shelf.add2Shelf()
 def f_showSearch():
     import vt_quicklauncher
     vt_quicklauncher.show()
@@ -788,7 +807,7 @@ def f_showWebsite(website):
 
 ################################ Define Specific Functions End ###############################
 
-LDMT()
+# LDMT()
 
 
 

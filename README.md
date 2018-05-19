@@ -78,4 +78,4 @@ Paypal:
 
 Alipay
 
-![](http://www.xgits.com:8181/uploads/201805/resume/attach_153009d71103f72a.png = 100x100)
+![](http://www.xgits.com:8181/uploads/201805/resume/attach_153009d71103f72a.png =100x100)

@@ -71,4 +71,4 @@ Installation:
     cmds.evalDeferred("LDMT()") 
     ```
     
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](paypal.me/xgits)
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](http://paypal.me/xgits)

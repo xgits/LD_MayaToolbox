@@ -70,3 +70,5 @@ Installation:
     cmds.evalDeferred("from LDMT import *")
     cmds.evalDeferred("LDMT()") 
     ```
+    
+    [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](176255437@qq.com)

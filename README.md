@@ -76,6 +76,6 @@ Paypal:
 
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](http://paypal.me/xgits)
 
-Alipay
+Alipay 支付宝
 
 ![](http://www.xgits.com:8181/uploads/201805/resume/attach_15300a3ac989111e.png)

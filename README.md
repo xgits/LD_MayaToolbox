@@ -70,7 +70,11 @@ Installation:
     cmds.evalDeferred("from LDMT import *")
     cmds.evalDeferred("LDMT()") 
     ```
-    
+If you want to support me or this project, please donate to :
+Paypal:
+
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](http://paypal.me/xgits)
-or
+
+Alipay
+
 ![](http://www.xgits.com:8181/uploads/201805/resume/attach_153009d71103f72a.png)

@@ -1,7 +1,11 @@
-# LD_MayaToolbox
-This is a maya toolbox written by Liu Dian. 中文安装步骤请往下看.
 
-There are currently two version of this tool:
+# Wiki
+    [Documents 说明文档](https://github.com/xgits/LD_MayaToolbox/wiki/)
+
+# About LD MayaToolbox
+    This is a maya toolbox written by Liu Dian. Gathered many useful script and plugins written by me or open sourced.
+
+    There are currently two version of this tool:
     
     1. First one is free on this github, only agreement is that you will upload information to my website so I can
     keep track of this tool and improve it to be better. This tool will gather your computer username and the count
@@ -13,7 +17,7 @@ There are currently two version of this tool:
 
     Free to use both version for commercial or personal use.
 
-Installation:
+# Installation:
 
     Download ZIP or clone the source project and then:
 
@@ -38,8 +42,11 @@ Installation:
     cmds.evalDeferred("from LDMT import *")
     cmds.evalDeferred("LDMT()") 
     ```
-        
-本工具有两个版本:
+
+# 简介 LD MayaToolbox
+    这是一个 maya 工具箱, 集成了众多本人原创和开源的maya脚本插件.
+
+    本工具有两个版本:
     
     1.其一是github上的这个版本, 唯一需要同意的是上传你的实用信息到我的个人网站, 这样我可以改进这个工具. 这个工具会上传的信息
     仅包括计算机用户名以及按钮点击次数. 这些信息仅会被用于改善工具.
@@ -48,7 +55,7 @@ Installation:
 
     两个版本都可用于商业和个人使用.
 
-安装方法:
+# 安装方法:
     下载ZIP压缩包, 或者github项目, 然后:
 
     第一种 自动安装 (推荐): 直接双击 LDMT_install.bat, 启动maya 就会自动启动本工具. 

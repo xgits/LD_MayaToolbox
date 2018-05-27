@@ -11,7 +11,8 @@
     keep track of this tool and improve it to be better. This tool will gather your computer username and the count
     of clicks. The information will be used and only be used for improve this tool. 
 
-    2. Second option is to buy a pro version on gumroad here:  the pro version has a few functions with bonus performance. 
+    2. Second option is to buy a pro version on gumroad here <script src="https://gumroad.com/js/gumroad.js"></script>
+<a class="gumroad-button" href="https://gum.co/xgits">Gumroad</a>:  the pro version has a few functions with bonus performance. 
     If you have concerns about upload your information or just being kind to me, you can buy this version of toolbox. 
 
     Free to use both version for commercial or personal use.
@@ -50,8 +51,9 @@
     1.其一是github上的这个版本, 唯一需要同意的是上传你的实用信息到我的个人网站, 这样我可以改进这个工具. 这个工具会上传的信息
     仅包括计算机用户名以及按钮点击次数. 这些信息仅会被用于改善工具.
 
-    2.其二是gumroad上的版本, 专业版有一些自定义UI的功能. 如果你对上传使用信息有顾虑或者仅仅是出于善意帮助我, 请购买专业版.
-
+    2.其二是gumroad上的版本, 专业版有部分功能效率更高且可以选择是否上传数据.如果你对上传使用信息有顾虑或者出于鼓励, 请购买专业版.
+    <script src="https://gumroad.com/js/gumroad.js"></script>
+<a class="gumroad-button" href="https://gum.co/xgits">Gumroad</a>
     两个版本都可用于商业和个人使用.
 
 # 安装方法:

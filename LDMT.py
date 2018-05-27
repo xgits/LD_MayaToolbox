@@ -451,11 +451,11 @@ def f_UI_create():
                 bgc=darkerGrey, l="Help Mannul", c= 'f_command("Help Mannual")') 
     cmds.setParent("..")
     cmds.setParent("..")
-    cmds.gridLayout(numberOfColumns = 1, cellHeight = LDMT_UI_cell_height, cellWidth=LDMT_UI_width)
+    cmds.gridLayout(numberOfColumns = 1, cellHeight = LDMT_UI_cell_height, cellWidth=LDMT_UI_width+1)
     cmds.button(ann="Update.", 
                 bgc=darkerGrey, l="Update", c= 'f_command("Update")') 
     cmds.setParent("..")
-      
+    
 def f_hotkey_init():
     if MAYA_version_float >= 2016:
         hotkeySet = cmds.hotkeySet(q=1,hotkeySetArray=1)

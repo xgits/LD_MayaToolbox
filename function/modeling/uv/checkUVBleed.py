@@ -1,21 +1,17 @@
-# About ####################
-# Auther:  Liu Dian
-# Email:   xgits@outlook.com
-# Website: www.xgits.com
-# Version: Pro 
-# License: GPL
+'''
+Auther: Liu Dian 
+Email: xgits@outlook.com
+Website: www.xgits.com
+License: MIT
+'''
 import maya.cmds as cmds
 import maya.mel as mel
 import maya.api.OpenMaya as om2
-import cProfile
-def changeSelectionType(sel,selType):  #selType vertex face edge puv
-    mel.eval('if( !`exists doMenuComponentSelection` ) eval( "source dagMenuProc" );')
-    mel.eval('doMenuComponentSelection("'+sel+'","'+selType+'")' )
-    
+import math
 def checkUVBleed_ui():
     if cmds.window("checkUVBleed",ex=1):
         cmds.deleteUI("checkUVBleed")
-    cmds.window("checkUVBleed",sizeable=1,h=80,w=200)
+    cmds.window("checkUVBleed",sizeable=1,h=100,w=200)
     cmds.frameLayout("checkUV",l="Check UV Bleed",collapsable=0)
     cmds.gridLayout(numberOfColumns = 2, cellHeight = 22, cellWidth=100)
     cmds.text(al="center",l="Min Shell Pixel")
@@ -23,427 +19,83 @@ def checkUVBleed_ui():
     cmds.text(al="center",l="Min Border Pixel")
     cmds.intField("minBorder",v=16,min=1)
     cmds.text(al="center",l="UV size")
-    cmds.optionMenu("uvSize",ann="Set texture size.")
+    cmds.optionMenu("uvSize",ann="Set texture size.",changeCommand="print #1")
     cmds.menuItem(l=4096)
     cmds.menuItem(l=2048)
     cmds.menuItem(l=1024)
     cmds.menuItem(l=512)
+    cmds.radioCollection()
+    cmds.text(al="center",l="Has Overlap UV?")
+    cmds.optionMenu("overlapUV",ann="If this model have overlaping UVs. Will be slower.",changeCommand="print #1")
+    cmds.menuItem(l="No")
+    cmds.menuItem(l="Yes")
     cmds.setParent('..')
-    cmds.button(l="Check", c= 'LD_CheckUVBleed()') 
+    cmds.button(l="Check", c= 'checkUVBleed()') 
+    cmds.setParent('..')
     cmds.showWindow()
-
-def getUVEdgeDic(sel):
-    selList = om2.MSelectionList()
-    selList.add(sel)
-    selPath = selList.getDagPath(0)
-    selMesh = om2.MFnMesh(selPath)
-    selVtxIter = om2.MItMeshVertex(selPath)
-    selEdgeIter = om2.MItMeshEdge(selPath)
-    selFaceIter = om2.MItMeshPolygon(selPath)
-
-    uvid_uv = []  # generate {uvid:[u,v],} from MFnMesh.getUVs()
-    vtxid_uvid = []
-    edgeid_vtxid = []
-    edgeid_uvid = []   #edgeid_vtxid + vtxid_uvid
-    faceid_edgeid = []
-    faceid_uvid = []
-    edgeid_faceid = [] #faceid_edgeid reverse
-    uvedgeid_uvid = [] # get { uvedgeid: [uvid1, uvid2]} On border
-
-    uvid_usi = cmds.polyEvaluate(sel+'.map[*]',usi=1)  # [usi1,usi2,...]
-    uvArray = selMesh.getUVs()
-    for i in xrange(len(uvArray[0])):
-        uvid_uv.append([uvArray[0][i],uvArray[1][i]])
-        
-    while not selVtxIter.isDone():   #get {[[uvid1,uvid2],...]}
-        vtxid_uvid.append(list(set(selVtxIter.getUVIndices())))
-        selVtxIter.next()
-
-    while not selEdgeIter.isDone():  #get edge to vtx
-        edgeid_vtxid.append([selEdgeIter.vertexId(0),selEdgeIter.vertexId(1)])
-        edgeid_faceid.append(selEdgeIter.getConnectedFaces())
-        selEdgeIter.next()
-        
-    for edgeid in xrange(len(edgeid_vtxid)):  # get {[[uvid1,uvid2,uvid3],...]}
-        vtx0 = edgeid_vtxid[edgeid][0]
-        vtx1 = edgeid_vtxid[edgeid][1]
-        edgeid_uvid.append(vtxid_uvid[vtx0] + vtxid_uvid[vtx1])
-            
-    while not selFaceIter.isDone():  # get {[[uvid1,uvid2,uvid3,uvid4], ...] }
-        verts = selFaceIter.getVertices()
-        faceid_edgeid.append(selFaceIter.getEdges())
-        uvids=[]
-        for index in xrange(len(verts)):        
-            uvids.append(selFaceIter.getUVIndex(index)) #necessary for uvedgeid
-        faceid_uvid.append(uvids)
-        selFaceIter.next(None)
-                    
-    for edgeid in xrange(len(edgeid_faceid)):
-        faceids = edgeid_faceid[edgeid]
-        edgeuvids = set(edgeid_uvid[edgeid])
-        numface = len(faceids)
-        if numface == 1:                        #OnBorder
-            uvids =  faceid_uvid[faceids[0]]
-            uvedgeid_uvid.append(list(edgeuvids.intersection(uvids)))
-            continue
-        elif numface == 2:
-            uvidsA =  faceid_uvid[faceids[0]]
-            uvidsB =  faceid_uvid[faceids[1]]
-            intersectUV = list(set(uvidsA).intersection(uvidsB))
-            intersectUV_len = len(intersectUV)
-            if intersectUV_len<2:
-                if intersectUV_len == 1:
-                    for uv in edgeuvids:
-                        if uv == intersectUV[0]:
-                            continue
-                        elif uv in uvidsA or uv in uvidsB:
-                            uvedgeid_uvid.append([intersectUV[0],uv])
-                else:
-                    uvedgeid_uvid.append(list(edgeuvids.intersection(uvidsA)))
-                    uvedgeid_uvid.append(list(edgeuvids.intersection(uvidsB)))
-        else:
-            print("Cleanup mesh first!!!!")
-            
-    usi_uvid = {}
-    usi_uvidOnBord = {}
-    usi_uvedgeidOnBord = {}
-    usi_bb = {}
-
-    for uvid in xrange(len(uvid_usi)):
-        usi = uvid_usi[uvid]
-        if usi in usi_uvid:
-            usi_uvid[usi].append(uvid)
-        else:
-            usi_uvid[usi] = [uvid]
-
-    for uvedgeid in xrange(len(uvedgeid_uvid)):
-        usi = uvid_usi[uvedgeid_uvid[uvedgeid][0]]
-        if usi in usi_uvedgeidOnBord:
-            usi_uvedgeidOnBord[usi].append(uvedgeid)
-        else:
-            usi_uvedgeidOnBord[usi] = [uvedgeid]
-
-    for usi in usi_uvedgeidOnBord:
-        edgeids = usi_uvedgeidOnBord[usi]
-        uvsOnBord = []
-        for edgeid in edgeids:
-            uvsOnBord = uvsOnBord + uvedgeid_uvid[edgeid]
-        usi_uvidOnBord[usi] = list(set(uvsOnBord))
-
-    for usi in usi_uvidOnBord:
-        umin = 1
-        umax = 0
-        vmin = 1
-        vmax = 0
-        for uvid in usi_uvidOnBord[usi]:
-            u = uvid_uv[uvid][0]
-            v = uvid_uv[uvid][1]
-            if u < umin:
-                umin = u
-            if u > umax:
-                umax = u
-            if v < vmin:
-                vmin = v
-            if v > vmax:
-                vmax = v
-        usi_bb[usi] = [[umin,umax],[vmin,vmax]]
-
-    usi_bbarea = {}
-    for i in xrange(len(usi_uvid)): #get {usi:area,} from usi_bb
-        usi_bbarea[i] = abs(usi_bb[i][0][1]-usi_bb[i][0][0])*abs(usi_bb[i][1][1]-usi_bb[i][1][0])
-    bbarea_usi = sorted(zip(usi_bbarea.values(), usi_bbarea.keys())) # get [(minarea, usi0),...,( maxarea, usi99)]
-    bbarea_usi.reverse()
-
-    uvedgeid_uv = []
-    for uvedgeid in xrange(len(uvedgeid_uvid)):
-        uvidA = uvedgeid_uvid[uvedgeid][0]
-        uvidB = uvedgeid_uvid[uvedgeid][1]
-        uA = uvid_uv[uvidA][0] 
-        vA = uvid_uv[uvidA][1]
-        uB = uvid_uv[uvidB][0]
-        vB = uvid_uv[uvidB][1]
-        if vB >= vA:
-            uvedgeid_uv.append([[uA,vA],[uB,vB]])
-        else:
-            uvedgeid_uv.append([[uB,vB],[uA,vA]])
-                
-    return usi_uvid, uvid_uv, uvedgeid_uvid, usi_uvidOnBord, usi_uvedgeidOnBord, usi_bb, bbarea_usi, uvedgeid_uv
-
-def LD_CheckUVBleed():
-    uvScale = int(cmds.optionMenu("uvSize",q=1,v=1))
-    pixelDistance = cmds.intField("minShell",q=1,v=1)
+    
+def checkUVBleed():
+    uvResolution = int(cmds.optionMenu("uvSize",q=1,v=1))
+    pixDistance = cmds.intField("minShell",q=1,v=1)
     borderDistance = cmds.intField("minBorder",q=1,v=1)
-    uvDistance = float(pixelDistance)/uvScale
-    borderDistance =  float(borderDistance)/uvScale
-    TOLERANCE = 4
-    p = 10**TOLERANCE
-
     sel = cmds.ls(sl=1,o=1)
     sel = sel[0]
-    faceWithNoUV = getFacesHaveNoUV(sel)
-    if faceWithNoUV !=[]:
-        cmds.select(faceWithNoUV,r=1)
-        f_printMessage("Some Faces Have no UVs!")
-        return
-    uvDic = getUVEdgeDic(sel)  #uvDic[6]
-    usi_uvid =           uvDic[0]
-    uvid_uv =            uvDic[1]
-    uvedgeid_uvid =      uvDic[2]
-    usi_uvidOnBord =     uvDic[3]
-    usi_uvedgeidOnBord = uvDic[4]
-    usi_bb =             uvDic[5]
-    bbarea_usi =         uvDic[6]
-    uvedgeid_uv =        uvDic[7]
-
-    uvNotPass = set()  # len(uvNotPass) Filter out stacking uvs 
-    skipList = set() 
-    skipListTemp = set()
-    intersectList = {}
-    usi_uvidOnBord_final = {}
-    usi_uvedgeidOnBord_final = {}
-
-    # prepare
-    for tupleA in xrange(len(bbarea_usi)):
-        usiA = bbarea_usi[tupleA][1]
-        skipListTemp.add(usiA)
-        
-        # fast detect
-        bb_uminA = usi_bb[usiA][0][0]
-        bb_umaxA = usi_bb[usiA][0][1]
-        bb_vminA = usi_bb[usiA][1][0]
-        bb_vmaxA = usi_bb[usiA][1][1]  
-              
-        for tupleB in xrange(len(bbarea_usi)):
-            usiB = bbarea_usi[tupleB][1]
+    selDup = prepare_morphToUV(sel)
+    positions = returnShortDistancePos(selDup,pixDistance,borderDistance,uvResolution) #select target mesh first
+    if positions==0:
+        return "Just One Shell!"
+    UVNotPass = selectUVNotPass(sel,positions)
+    cmds.delete(selDup)
+    cmds.select(UVNotPass,r=1)
             
-            #faset detect
-            bb_uminB = usi_bb[usiB][0][0]
-            bb_umaxB = usi_bb[usiB][0][1]
-            bb_vminB = usi_bb[usiB][1][0]
-            bb_vmaxB = usi_bb[usiB][1][1]
-            if bb_uminA - uvDistance > bb_umaxB or\
-               bb_umaxA + uvDistance < bb_uminB or\
-               bb_vminA - uvDistance > bb_vmaxB or\
-               bb_vmaxA + uvDistance < bb_vminB :
-                continue
-                
-            if usiB in skipListTemp:
-                continue
-            if ifUVShellStack(usiA,usiB,usi_bb, p):
-                skipList.add(usiB)
-                skipListTemp.add(usiB)
-            elif ifUVShellIntersect(usiA,usiB,usi_uvedgeidOnBord, uvedgeid_uv, usi_bb):
-                if usiA in intersectList:
-                    intersectList[usiA].append(usiB)
-                else:
-                    intersectList[usiA]=[usiB]
-                skipListTemp.add(usiB)
-                skipList.add(usiB)
+def prepare_morphToUV(sel):  #1. inputmesh
+    selDup = cmds.duplicate(sel) #2. duplicate
+    selDup = selDup[0]
+    hasOverlapUV = cmds.optionMenu("overlapUV",q=1,v=1)
+    if hasOverlapUV == "Yes":
+        moveOutStackUV(selDup,"delete")
+    morph2UV(selDup)
+    if hasOverlapUV == "Yes":
+        moveOutOverlapUV(selDup,"delete")
+    return selDup
+       
+def moveOutStackUV(sel,ifDelete="move"):
+    uvDic = getUVDic(sel)
+    usi_uvname     = uvDic[2]      
+    usi_bb         = uvDic[11]
+    usiSkipList    = []
+    usiMoveOutList = []
+    uvMoveOutList  = []
+    for usiA in usi_bb:
+        if not usiA in usiSkipList:
+            usiSkipList.append(usiA)
+            usiA_Umin = usi_bb[usiA][0][0]
+            usiA_Umax = usi_bb[usiA][0][1]
+            usiA_Vmin = usi_bb[usiA][1][0]
+            usiA_Vmax = usi_bb[usiA][1][1]
+            for usiB in usi_bb:
+                if not usiB in usiSkipList:
+                    usiB_Umin = usi_bb[usiB][0][0]
+                    usiB_Umax = usi_bb[usiB][0][1]
+                    usiB_Vmin = usi_bb[usiB][1][0]
+                    usiB_Vmax = usi_bb[usiB][1][1]
+                    Umin_diff = abs(usiB_Umin-usiA_Umin)
+                    Umax_diff = abs(usiB_Umax-usiA_Umax)
+                    Vmin_diff = abs(usiB_Vmin-usiA_Vmin)
+                    Vmax_diff = abs(usiB_Vmax-usiA_Vmax)
+                    if(Umin_diff<0.0001 and Umax_diff<0.0001 and Vmin_diff<0.0001 and Vmax_diff<0.0001):
+                        usiMoveOutList.append(usiB)
+                        usiSkipList.append(usiB)
+    for usi in usiMoveOutList:
+        uvMoveOutList += usi_uvname[usi]
+    if ifDelete == "delete" and uvMoveOutList:
+        toDelete= cmds.polyListComponentConversion(uvMoveOutList,fuv=1,tf=1,internal=1)
+        cmds.delete(toDelete)
+    else:
+        cmds.polyEditUV(uvMoveOutList,u=1,r=1)
 
-            elif ifUVShellContain(usiA,usiB,usi_uvedgeidOnBord,usi_uvidOnBord,uvedgeid_uv,uvid_uv):
-                skipList.add(usiB)
-                skipListTemp.add(usiB)
-                
-    # calculate final list
-    for usiA in usi_uvidOnBord:
-        if usiA in skipList:
-            continue
-        if usiA in intersectList:
-            tempUVidList = []
-            tempUVedgeidList = [] 
-            for usiB in intersectList[usiA]:
-                tempUVidList += usi_uvidOnBord[usiB]
-                tempUVedgeidList += usi_uvedgeidOnBord[usiB]
-            usi_uvidOnBord_final[usiA] = tempUVidList + usi_uvidOnBord[usiA]
-            usi_uvedgeidOnBord_final[usiA] = tempUVedgeidList + usi_uvedgeidOnBord[usiA]
-        else:
-            usi_uvidOnBord_final[usiA] = usi_uvidOnBord[usiA]
-            usi_uvedgeidOnBord_final[usiA] = usi_uvedgeidOnBord[usiA]
-    
-    usi_bb_final = {}
-    for usi in usi_uvidOnBord_final:
-        umin = 1
-        umax = 0
-        vmin = 1
-        vmax = 0
-        for uvid in usi_uvidOnBord_final[usi]:
-            u = uvid_uv[uvid][0]
-            v = uvid_uv[uvid][1]
-            if u < umin:
-                umin = u
-            if u > umax:
-                umax = u
-            if v < vmin:
-                vmin = v
-            if v > vmax:
-                vmax = v
-        usi_bb_final[usi] = [[umin,umax],[vmin,vmax]]
-        
-    # calculate final result
-    for usiA in usi_uvidOnBord_final:        
-        if usi_bb_final[usiA][0][0] - borderDistance < 0 or\
-           usi_bb_final[usiA][0][1] + borderDistance > 1 or\
-           usi_bb_final[usiA][1][0] - borderDistance < 0 or\
-           usi_bb_final[usiA][1][1] + borderDistance > 1:
-            for uvid in usi_uvidOnBord_final[usiA]:
-                x = uvid_uv[uvid][0]
-                y = uvid_uv[uvid][1]
-                if  x - borderDistance < 0 or\
-                    x + borderDistance > 1 or\
-                    y - borderDistance < 0 or\
-                    y + borderDistance > 1:
-                    uvNotPass.add(uvid)
-
-        for usiB in usi_uvidOnBord_final:
-            if usiB == usiA or\
-            usi_bb_final[usiA][0][0] - uvDistance > usi_bb_final[usiB][0][1] or\
-            usi_bb_final[usiA][0][1] + uvDistance < usi_bb_final[usiB][0][0] or\
-            usi_bb_final[usiA][1][0] - uvDistance > usi_bb_final[usiB][1][1] or\
-            usi_bb_final[usiA][1][1] + uvDistance < usi_bb_final[usiB][1][0]:
-                continue
-            for uvid in usi_uvidOnBord_final[usiA]:
-                if uvid in uvNotPass:
-                    continue
-                x = uvid_uv[uvid][0]
-                y = uvid_uv[uvid][1]
-                if x - uvDistance > usi_bb_final[usiB][0][1] or\
-                   x + uvDistance < usi_bb_final[usiB][0][0] or\
-                   y - uvDistance > usi_bb_final[usiB][1][1] or\
-                   y + uvDistance < usi_bb_final[usiB][1][0]:
-                    continue
-                for edge in usi_uvedgeidOnBord_final[usiB]:
-                    uvedgeid = uvedgeid_uvid[edge]
-                    x1 = uvid_uv[uvedgeid[0]][0]
-                    y1 = uvid_uv[uvedgeid[0]][1]
-                    x2 = uvid_uv[uvedgeid[1]][0]
-                    y2 = uvid_uv[uvedgeid[1]][1]
-                    cross = (x2 - x1) * (x - x1) + (y2 - y1) * (y - y1)
-                    if cross <= 0:
-                        closest = ((x - x1)**2 + (y - y1)**2)**(0.5)
-                        if closest < uvDistance:
-                            uvNotPass.add(uvid)
-                        continue
-                    d2 = (x2 - x1)**2 + (y2 - y1)**2
-                    if cross >= d2:
-                        closest = ((x - x2)**2 + (y - y2)**2)**(0.5)
-                        if closest < uvDistance:
-                            uvNotPass.add(uvid)
-                        continue
-                    r = cross / d2
-                    px = x1 + (x2 - x1) * r
-                    py = y1 + (y2 - y1) * r
-                    closest = ((x - px)**2 + (py - y)**2)**(0.5)
-                    if closest < uvDistance:
-                        uvNotPass.add(uvid)
-    uvNamesNotPass = []
-    for uv in uvNotPass:
-        uvNamesNotPass.append(sel+'.map['+str(uv)+']')
-    cmds.select(uvNamesNotPass,r=1)
-    changeSelectionType(sel,"puv")
-    
-def ifUVShellStack(usiA, usiB, usi_bb, p):
-    # fast filter
-    usiA_umin = float(int(usi_bb[usiA][0][0] * p))/p
-    usiB_umin = float(int(usi_bb[usiB][0][0] * p))/p
-    if not usiA_umin == usiB_umin:
-        return 0
-        
-    usiA_umax = float(int(usi_bb[usiA][0][1] * p))/p
-    usiA_vmin = float(int(usi_bb[usiA][1][0] * p))/p
-    usiA_vmax = float(int(usi_bb[usiA][1][1] * p))/p
-    usiB_umax = float(int(usi_bb[usiB][0][1] * p))/p
-    usiB_vmin = float(int(usi_bb[usiB][1][0] * p))/p
-    usiB_vmax = float(int(usi_bb[usiB][1][1] * p))/p
-    if usiA_umax == usiB_umax and usiA_vmin == usiB_vmin and usiA_vmax == usiB_vmax:
-        return 1
-    return 0
-
-def ifUVShellIntersect(usiA, usiB, usi_uvedgeidOnBord, uvedgeid_uv, usi_bb):
-    for edgeA in usi_uvedgeidOnBord[usiA]:
-        ax = uvedgeid_uv[edgeA][0][0]
-        ay = uvedgeid_uv[edgeA][0][1]
-        bx = uvedgeid_uv[edgeA][1][0]
-        by = uvedgeid_uv[edgeA][1][1]
-
-        # fast filter
-        abx = [ax,bx]
-        aby = [ay,by]
-        if bx<ax:
-            abx = [bx,ax]
-        if by<ay:
-            aby = [by,ay]
-
-        # bound filter
-        bb_usiB = usi_bb[usiB]
-        bb_uminB = bb_usiB[0][0]
-        bb_umaxB = bb_usiB[0][1]
-        bb_vminB = bb_usiB[1][0]
-        bb_vmaxB = bb_usiB[1][1]
-        
-        if  abx[0] > bb_umaxB or\
-            abx[1] < bb_uminB or\
-            aby[0] > bb_vmaxB or\
-            aby[1] < bb_vminB:
-            continue
-            
-        for edgeB in usi_uvedgeidOnBord[usiB]:
-            cx = uvedgeid_uv[edgeB][0][0]
-            cy = uvedgeid_uv[edgeB][0][1]
-            dx = uvedgeid_uv[edgeB][1][0]
-            dy = uvedgeid_uv[edgeB][1][1]
-            
-            # fast filter
-            cdx = [cx,dx]
-            cdy = [cy,dy]
-            if dx<cx:
-                cdx = [dx,cx]
-            if dy<cy:
-                cdy = [dy,cy]
-            if abx[0] > cdx[1] or\
-               abx[1] < cdx[0] or\
-               aby[0] > cdy[1] or\
-               aby[1] < cdy[0]:
-                continue
-            
-            x1 = bx - ax
-            y1 = by - ay
-            x2 = cx - ax
-            y2 = cy - ay
-            cross1 = x1*y2-x2*y1
-            x2 = dx - ax
-            y2 = dy - ay
-            cross2 = x1*y2-x2*y1
-            x1 = dx - cx
-            y1 = dy - cy
-            x2 = ax - cx
-            y2 = ay - cy
-            cross3 = x1*y2-x2*y1
-            x2 = bx - cx
-            y2 = by - cy
-            cross4 = x1*y2-x2*y1
-            if (cross1*cross2 <= 0 and cross3*cross4<=0):
-                return 1
-    return 0
-
-def ifUVShellContain(usiA,usiB,usi_uvedgeidOnBord,usi_uvidOnBord,uvedgeid_uv,uvid_uv):
-    uvid = usi_uvidOnBord[usiB][0]
-    intersects = 0
-    ray_u = uvid_uv[uvid][0]
-    ray_v = uvid_uv[uvid][1]
-
-    for edge in usi_uvedgeidOnBord[usiA]:
-        u0 = uvedgeid_uv[edge][0][0]
-        v0 = uvedgeid_uv[edge][0][1]
-        u1 = uvedgeid_uv[edge][1][0]
-        v1 = uvedgeid_uv[edge][1][1]
-        if (v1 >= ray_v and v0 < ray_v):
-            if ((u0-ray_u)*(v1-ray_v)-(v0-ray_v)*(u1-ray_u)) < 0:
-                intersects += 1
-    if intersects%2 == 1:
-        return 1
-    return 0
-    
-def getFacesHaveNoUV(sel):
+def morph2UV(sel):
+    #delete face with no uv
     selList = om2.MSelectionList()
     selList.add(sel)
     selPath = selList.getDagPath(0)
@@ -457,6 +109,397 @@ def getFacesHaveNoUV(sel):
     faceidWithNoUV = list(set(faceidWithNoUV))
     for faceid in faceidWithNoUV:
         faceWithNoUV+=[sel+'.f['+str(faceid)+']']
-    return faceWithNoUV
-# checkUVBleed_0()
-# cProfile.run('checkUVBleed_0()')
+    if faceWithNoUV:
+        cmds.delete(faceWithNoUV)
+        
+    #split if on uv border
+    vertIt = om2.MItMeshVertex(selPath)
+    selMesh = om2.MFnMesh(selPath)
+    vertIdToSplit = []
+    vertToSplit = []
+    while not vertIt.isDone():
+        uvIndices = vertIt.getUVIndices()
+        uvIndices = list(set(uvIndices))
+        if len(uvIndices)>=2:
+            vertIdToSplit.append(vertIt.index())
+        elif vertIt.onBoundary():
+            vertIdToSplit.append(vertIt.index())
+        vertIt.next()
+    for i in range(len(vertIdToSplit)):
+        vertToSplit.append(sel+'.vtx['+str(vertIdToSplit[i])+']')
+    cmds.polySplitVertex(vertToSplit,cch=0)
+    
+    #morph to UV
+    myMesh = om2.MFnMesh(selPath)
+    newPointArray = om2.MPointArray()
+    space = om2.MSpace.kWorld
+    myMesh_UVs = myMesh.getUVs()
+    myMesh_points = myMesh.getPoints()
+    myMesh_itVertex = om2.MItMeshVertex(selPath)
+    points = om2.MPointArray()
+    while not myMesh_itVertex.isDone():
+        vertIndex = myMesh_itVertex.index()
+        gotUV = myMesh_itVertex.getUV()
+        points.append((gotUV[0],gotUV[1],0))
+        myMesh_itVertex.next()
+    myMesh.setPoints(points,space)
+    selUVs  = sel+'.map[*]'
+    cmds.polyMergeVertex(sel,d=0.00001,cch=0)
+    cmds.polyMergeUV(selUVs,d=0.00001,cch=0)   # fix split
+    
+def moveOutOverlapUV(sel,ifDelete="move"):  # add two method to detect!!!!!!!!!!!!!!!!!!
+    uvDic = getUVDic(sel)
+    usi_uvname =        uvDic[2]
+    uvid_uv =           uvDic[3]
+    vtxOnBordId_uvid =  uvDic[4]
+    edgeOnBordId_uvid = uvDic[6]
+    edgeOnBordId_uv =   uvDic[7]
+    usi_edgeOnBordId =  uvDic[9]
+    usi_vtxOnBordId =   uvDic[10]
+    usi_bb =            uvDic[11]
+    usi_bbarea = {}
+    bbarea_usi_zip = []
+    usi_overlapUsi = {}
+    intersectUVsName =  []
+    usiSkipList = []
+
+    for i in range(len(usi_uvname)): #get {usi:area,} from usi_bb
+        usi_bbarea[i] = abs(usi_bb[i][0][0]-usi_bb[i][0][1])*abs(usi_bb[i][1][0]-usi_bb[i][1][1])
+    bbarea_usi_zip = sorted(zip(usi_bbarea.values(), usi_bbarea.keys())) # get [(minarea, usi0),...,( maxarea, usi99)]
+    bbarea_usi_zip.reverse()
+
+    # intersect method
+    for area_usiA_tuple in range(len(bbarea_usi_zip)):
+        intersects=0
+        usiA = bbarea_usi_zip[area_usiA_tuple][1]
+        if usiA in usiSkipList:
+            continue
+        for area_usiB_tuple in range(len(bbarea_usi_zip)):
+            usiB = bbarea_usi_zip[area_usiB_tuple][1]
+            if usiB != usiA and not (usiB in usiSkipList):
+                if (usi_bb[usiB][0][0]>usi_bb[usiA][0][1] or\
+                    usi_bb[usiA][0][0]>usi_bb[usiB][0][1] or\
+                    usi_bb[usiB][1][0]>usi_bb[usiA][1][1] or\
+                    usi_bb[usiA][1][0]>usi_bb[usiB][1][1]):
+                    continue
+                else:
+                    for edgeA in usi_edgeOnBordId[usiA]:
+                        ax = edgeOnBordId_uv[edgeA][0][0]
+                        ay = edgeOnBordId_uv[edgeA][0][1]
+                        bx = edgeOnBordId_uv[edgeA][1][0]
+                        by = edgeOnBordId_uv[edgeA][1][1]
+                        
+                        if bx>ax:
+                            edgeA_bb = [[ax,bx],[ay,by]]
+                        else:
+                            edgeA_bb = [[bx,ax],[ay,by]]
+                          
+                        for edgeB in usi_edgeOnBordId[usiB]:
+                            if intersects == 1:
+                                intersects = 0
+                                break
+                            elif usiB in usiSkipList:
+                                break
+                            cx = edgeOnBordId_uv[edgeB][0][0]
+                            cy = edgeOnBordId_uv[edgeB][0][1]
+                            dx = edgeOnBordId_uv[edgeB][1][0]
+                            dy = edgeOnBordId_uv[edgeB][1][1]   
+                            if dx > cx:
+                                edgeB_bb = [[cx,dx],[cy,dy]]
+                            else:
+                                edgeB_bb = [[dx,cx],[cy,dy]]
+                            # now let's see if they intersect!
+                            if edgeA_bb[0][0]>edgeB_bb[0][1] or\
+                               edgeB_bb[0][0]>edgeA_bb[0][1] or\
+                               edgeA_bb[1][0]>edgeB_bb[1][1] or\
+                               edgeB_bb[1][0]>edgeA_bb[1][1]:
+                                continue
+                            x1 = bx - ax
+                            y1 = by - ay
+                            x2 = cx - ax
+                            y2 = cy - ay
+                            cross1 = x1*y2-x2*y1
+                            x2 = dx - ax
+                            y2 = dy - ay
+                            cross2 = x1*y2-x2*y1
+                            x1 = dx - cx
+                            y1 = dy - cy
+                            x2 = ax - cx
+                            y2 = ay - cy
+                            cross3 = x1*y2-x2*y1
+                            x2 = bx - cx
+                            y2 = by - cy
+                            cross4 = x1*y2-x2*y1
+                            if (cross1*cross2 <= 0 and cross3*cross4<=0):
+                                intersects = 1
+                                if usiA not in usi_overlapUsi:
+                                    usi_overlapUsi[usiA] = [usiB]
+                                else:
+                                    usi_overlapUsi[usiA].append(usiB)
+                                usiSkipList.append(usiA)
+                                usiSkipList.append(usiB)
+                    
+                    #ray method
+                    for vtxid in usi_vtxOnBordId[usiA]:
+                        if usiB in usiSkipList:
+                            break
+                        intersects = 0
+                        uvid = vtxOnBordId_uvid[vtxid]
+                        ray_u = uvid_uv[uvid][0]
+                        ray_v = uvid_uv[uvid][1]
+                        for edge in usi_edgeOnBordId[usiB]:
+                            u0 = edgeOnBordId_uv[edge][0][0]
+                            u1 = edgeOnBordId_uv[edge][1][0]
+                            v0 = edgeOnBordId_uv[edge][0][1]
+                            v1 = edgeOnBordId_uv[edge][1][1]
+                            if (v1 >= ray_v and v0 < ray_v):
+                                if ((u0-ray_u)*(v1-ray_v)-(v0-ray_v)*(u1-ray_u)) < 0:
+                                    intersects += 1
+                        if intersects%2 == 1:
+                            if usiB in usi_overlapUsi:
+                                usi_overlapUsi[usiB].append(usiA)
+                            else:
+                                usi_overlapUsi[usiB] = [usiA]
+                            usiSkipList.append(usiA)
+                            usiSkipList.append(usiB)
+                            continue
+
+    for usiA in usi_overlapUsi:
+        for usiB in usi_overlapUsi[usiA]:
+            intersectUVsName += usi_uvname[usiB]
+        
+    if ifDelete=="delete" and intersectUVsName:
+        intersectFaces = cmds.polyListComponentConversion(intersectUVsName,fuv=1,tf=1)
+        cmds.delete(intersectFaces)
+    elif ifDelete=="move":
+        cmds.polyEditUV(intersectUVsName,u=1,r=1)
+    return intersectUVsName
+    
+def returnShortDistancePos(sel,pixelDistance=16,borderDistance=8,uvScale=2048):
+# sel=cmds.ls(sl=1,o=1)
+# sel = sel[0]
+    # uvDistance = float(25)/512
+    # borderDistance =   float(25)/512
+    uvDistance = float(pixelDistance)/uvScale
+    borderDistance =  float(borderDistance)/uvScale
+    TOLERANCE = 5
+    p = 10**TOLERANCE
+    uvDic = getUVDic(sel)
+    uvid_uv =          uvDic[3]
+    vtxOnBordId_uvid = uvDic[4]
+    edgeOnBordId_uv =  uvDic[7]
+    usi_edgeOnBordId = uvDic[9]
+    usi_vtxOnBordId =  uvDic[10]
+    bbList =           uvDic[11]
+
+    uvNotPass = []  # len(uvNotPass)
+    vtxSkipList = []
+    for usiA in usi_vtxOnBordId:
+        if bbList[usiA][0][0] - borderDistance < 0 or\
+           bbList[usiA][0][1] + borderDistance > 1 or\
+           bbList[usiA][1][0] - borderDistance < 0 or\
+           bbList[usiA][1][1] + borderDistance > 1:
+            for vtx in usi_vtxOnBordId[usiA]:
+                vtx_uvid = vtxOnBordId_uvid[vtx]  
+                x = uvid_uv[vtx_uvid][0]
+                y = uvid_uv[vtx_uvid][1]
+                if  x - borderDistance < 0 or\
+                    x + borderDistance > 1 or\
+                    y - borderDistance < 0 or\
+                    y + borderDistance > 1:
+                    uvNotPass.append([float(int(x*p))/p,float(int(y*p))/p])
+                    vtxSkipList.append(vtx)
+
+        for usiB in usi_edgeOnBordId:
+            if usiB == usiA or\
+            bbList[usiA][0][0] - uvDistance > bbList[usiB][0][1] or\
+            bbList[usiA][0][1] + uvDistance < bbList[usiB][0][0] or\
+            bbList[usiA][1][0] - uvDistance > bbList[usiB][1][1] or\
+            bbList[usiA][1][1] + uvDistance < bbList[usiB][1][0]:
+                continue
+            for vtx in usi_vtxOnBordId[usiA]:
+                if vtx in vtxSkipList:
+                    continue
+                    
+                vtx_uvid = vtxOnBordId_uvid[vtx]  
+                x = uvid_uv[vtx_uvid][0]
+                y = uvid_uv[vtx_uvid][1]
+                
+                if x - uvDistance > bbList[usiB][0][1] or\
+                x + uvDistance < bbList[usiB][0][0] or\
+                y - uvDistance > bbList[usiB][1][1] or\
+                y + uvDistance < bbList[usiB][1][0]:
+                    continue
+                for edge in usi_edgeOnBordId[usiB]:
+                    x1 = edgeOnBordId_uv[edge][0][0]
+                    y1 = edgeOnBordId_uv[edge][0][1]                    
+                    x2 = edgeOnBordId_uv[edge][1][0]
+                    y2 = edgeOnBordId_uv[edge][1][1]
+                    cross = (x2 - x1) * (x - x1) + (y2 - y1) * (y - y1)
+                    toAppend = [float(int(x*p))/p,float(int(y*p))/p] 
+                    if cross <= 0:
+                        closest = math.sqrt((x - x1)**2 + (y - y1)**2)
+                        if closest < uvDistance:
+                            uvNotPass.append(toAppend)
+                        continue
+                    d2 = (x2 - x1)**2 + (y2 - y1)**2
+                    if cross >= d2:
+                        closest = math.sqrt((x - x2)**2 + (y - y2)**2)
+                        if closest < uvDistance:
+                            uvNotPass.append(toAppend)
+                        continue
+                    r = cross / d2
+                    px = x1 + (x2 - x1) * r
+                    py = y1 + (y2 - y1) * r
+                    closest = math.sqrt((x - px)**2 + (py - y)**2)
+                    if closest < uvDistance:
+                            uvNotPass.append(toAppend)
+    return uvNotPass
+
+def selectUVNotPass(sel,positions):  #### FINAL STAGE
+    TOLERANCE = 5
+    p = 10**TOLERANCE
+    selList = om2.MSelectionList()
+    selList.add(sel)
+    selPath = selList.getDagPath(0)
+    selMesh = om2.MFnMesh(selPath)
+    uvArray = selMesh.getUVs() #get uvid_uv
+    uvid_uv = {} # get {uvid:[u,v],}
+    for i in range(len(uvArray[0])):
+        uvid_uv[i] = [uvArray[0][i],uvArray[1][i]]
+    uvidNotPass = []
+    for i in uvid_uv:
+        uvpos = uvid_uv[i]
+        u= float(int(uvpos[0] * p))/p  #rounding faster than round()
+        v= float(int(uvpos[1] * p))/p
+        for uvpo_pos in positions:
+            if u > uvpo_pos[0]-0.001 and v > uvpo_pos[1]-0.001 and u < uvpo_pos[0]+0.001 and v < uvpo_pos[1]+0.001:
+                uvidNotPass.append(i)
+    uvNameNotPass = []
+    if uvidNotPass:
+        for uv in uvidNotPass:
+            uvNameNotPass.append(sel+'.map['+str(uv)+']')
+    return uvNameNotPass
+####### MY EVALUATE FUNCTION #########
+def getUVDic(sel):
+    # UVDics are connected, keep the codes in order, shit codes
+    uvid_usi = cmds.polyEvaluate(sel+'.map[*]',usi=1) # [usi]
+    usi_uvids = {}  # generate {usi:uvid,} from [usi]
+    usi_uvname = {} # generate {usi:uvname,} from [usi]
+    for uvid in range(len(uvid_usi)):
+        usi = uvid_usi[uvid]
+        if usi in usi_uvids:
+            usi_uvids[usi].append(uvid)
+            usi_uvname[usi].append(sel+'.map['+str(uvid)+']')
+        else:
+            usi_uvids[usi] = [uvid]
+            usi_uvname[usi] = [sel+'.map['+str(uvid)+']']
+            
+    uvid_uv = {}  # generate {uvid:[u,v],} from MFnMesh.getUVs()
+    selList = om2.MSelectionList()
+    selList.add(sel)
+    selPath = selList.getDagPath(0)
+    selMesh = om2.MFnMesh(selPath)
+    uvArray = selMesh.getUVs()
+    for i in range(len(uvArray[0])):
+        uvid_uv[i] = [uvArray[0][i],uvArray[1][i]]
+
+    vtxOnBordId_uvid = {} # generate {vtxid:uvid} for edgeOnBordId_uv list
+    uvid_vtxOnBordId = {}
+    vtxIter = om2.MItMeshVertex(selPath)
+    while not vtxIter.isDone():
+        if vtxIter.onBoundary():
+            vtxid = vtxIter.index()
+            uvid = vtxIter.getUVIndices()[0]
+            vtxOnBordId_uvid[vtxid] = uvid
+            uvid_vtxOnBordId[uvid] = vtxid
+        vtxIter.next()
+        
+    edgeOnBordId_uvid = {}  # generate {edge:[[u0,v0],[u1,v1]],}
+    edgeOnBordId_vtx = {}  # generate {edge:[vtxA,vtxB],}
+    edgeOnBordId_uv = {} # genreate {edge:[[u0,v0],[u1,v1]],}
+    edgeIter = om2.MItMeshEdge(selPath)
+    while not edgeIter.isDone():
+        if edgeIter.onBoundary():
+            edgeid = edgeIter.index()
+            vertA = edgeIter.vertexId(0)
+            vertB = edgeIter.vertexId(1)
+            vertA_uvid = vtxOnBordId_uvid[vertA]
+            vertB_uvid = vtxOnBordId_uvid[vertB]
+            vertA_u = uvid_uv[vertA_uvid][0]
+            vertA_v = uvid_uv[vertA_uvid][1]
+            vertB_u = uvid_uv[vertB_uvid][0]
+            vertB_v = uvid_uv[vertB_uvid][1]
+            edgeOnBordId_uvid[edgeid] = [vertA_uvid,vertB_uvid]
+            edgeOnBordId_vtx[edgeid] = [vertA,vertB]
+            if vertA_v <= vertB_v:
+                edgeOnBordId_uv[edgeid] = [[vertA_u,vertA_v],[vertB_u,vertB_v]]
+            else:
+                edgeOnBordId_uv[edgeid] = [[vertB_u,vertB_v],[vertA_u,vertA_v]]
+        edgeIter.next()
+
+    usi_edgeOnBordId = {} # generate {usi:[edgeOnBordId,],} from edgeOnBordId_uvid and from uvid_usi
+    for edge in edgeOnBordId_uvid:
+        uvid = edgeOnBordId_uvid[edge][0]
+        usi = uvid_usi[uvid]
+        if usi in usi_edgeOnBordId:
+            usi_edgeOnBordId[usi].append(edge)
+        else:
+            usi_edgeOnBordId[usi] = [edge]
+            
+    usi_vtxOnBordId = {} # generate {usi0:[vtx0,vtx1,],usi1:[...]} from usi_edgeOnBordId and edgeOnBordId_uvid
+    for usi in usi_edgeOnBordId:
+        vtxPerUsi = []
+        for edgeid in usi_edgeOnBordId[usi]:
+            vtxPerUsi += edgeOnBordId_vtx[edgeid]
+        usi_vtxOnBordId[usi] = list(set(vtxPerUsi))
+        
+    usi_bb = {} # generate {usi:[[Umin,Umax],[Vmin,Vmax]],} from usi_uvids,uvid_uv
+    for usi in usi_uvids:
+        bb_Umin = 1
+        bb_Umax = 0
+        bb_Vmin = 1
+        bb_Vmax = 0
+        for uvid in usi_uvids[usi]:
+            if uvid_uv[uvid][0] < bb_Umin:
+                bb_Umin = uvid_uv[uvid][0]
+            if uvid_uv[uvid][0] > bb_Umax:
+                bb_Umax = uvid_uv[uvid][0]
+            if uvid_uv[uvid][1] < bb_Vmin:
+                bb_Vmin = uvid_uv[uvid][1]
+            if uvid_uv[uvid][1] > bb_Vmax:
+                bb_Vmax = uvid_uv[uvid][1]
+        usi_bb[usi] = [[bb_Umin,bb_Umax],[bb_Vmin,bb_Vmax]]
+
+    ### return
+    return uvid_usi,\
+           usi_uvids,\
+           usi_uvname,\
+           uvid_uv,\
+           vtxOnBordId_uvid,\
+           uvid_vtxOnBordId,\
+           edgeOnBordId_uvid,\
+           edgeOnBordId_uv,\
+           edgeOnBordId_vtx,\
+           usi_edgeOnBordId,\
+           usi_vtxOnBordId,\
+           usi_bb
+  # return uvid_usi,\         # 0  uvid_usi
+  #        usi_uvids,\        # 1  usi_uvids
+  #        usi_uvname,\       # 2  usi_uvname
+  #        uvid_uv,\          # 3  uvid_uv
+  #        vtxOnBordId_uvid,\ # 4  vtxOnBordId_uvid
+  #        uvid_vtxOnBordId,\ # 5  uvid_vtxOnBordId
+  #        edgeOnBordId_uvid,\# 6  edgeOnBordId_uvid
+  #        edgeOnBordId_uv,\  # 7  edgeOnBordId_uv
+  #        edgeOnBordId_vtx,\ # 8  edgeOnBordId_vtx
+  #        usi_edgeOnBordId,\ # 9  usi_edgeOnBordId
+  #        usi_vtxOnBordId,\  # 10 usi_vtxOnBordId
+  #        usi_bb             # 11 usi_bb
+
+    
+# newUVDic =  getUVDic()
+
+# sel = cmds.ls(sl=1,o=1)
+# sel = sel[0]
+# cmds.select(abc,r=1)

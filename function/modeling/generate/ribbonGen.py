@@ -5,7 +5,13 @@
 
 from pymel.core import *
 import maya.cmds as cmds
+start = time.time()
 
+ribbonGen()
+
+end = time.time()
+
+print end-start
 
 def ribbonGen():
         
@@ -52,7 +58,7 @@ def ribbonGen():
             select(profileCurve[0], curveInstance,r=1)
             extrudeResult = extrude(ch=1, rn=0, po=1, et=2, ucp=2, fpt=1, upn=1, rotation=0, scale=0, rsp=1, name='ribbonMesh#')
             extrudedSurface = ls(sl=1);
-            extrudedSurface[0].addAttr('width',min=0.01,at='double',dv=1)  
+            extrudedSurface[0].addAttr('width',min=0.001,at='double',dv=1)  
             extrudedSurface[0].addAttr('curvature',min=-10,max=10,at='double',dv=0)  
             extrudedSurface[0].addAttr('orientation',min=-360,max=360,at='long',dv=1)  
             extrudedSurface[0].addAttr('taper',min=0,at='double',dv=1)  

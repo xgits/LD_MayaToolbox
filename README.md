@@ -11,9 +11,8 @@
     keep track of this tool and improve it to be better. This tool will gather your computer username and the count
     of clicks. The information will be used and only be used for improve this tool. 
 
-    2. Second option is to buy a pro version on gumroad here:  the pro version has a few bonus functions on 
-    customizing your UI. If you have concerns about upload your information or just being kind to me, please pay for 
-    the pro version toolbox. 
+    2. Second option is to buy a pro version on gumroad here:  the pro version has a few functions with bonus performance. 
+    If you have concerns about upload your information or just being kind to me, you can buy this version of toolbox. 
 
     Free to use both version for commercial or personal use.
 

@@ -15,8 +15,7 @@
     If you have concerns about upload your information or just being kind to me, you can buy this version of toolbox. 
 
     Free to use both version for commercial or personal use.
-<html><script src="https://gumroad.com/js/gumroad.js"></script><a class="gumroad-button" href="https://gum.co/xgits">Gumroad Link</a>
-</html>
+    <a class="gumroad-button" href="https://gum.co/xgits">Gumroad Link</a>
 # Installation:
 
     Download ZIP or clone the source project and then:
@@ -53,7 +52,7 @@
 
     2.其二是gumroad上的版本, 专业版有部分功能效率更高且可以选择是否上传数据.如果你对上传使用信息有顾虑或者出于鼓励, 请购买专业版.
     两个版本都可用于商业和个人使用.
-<script src="https://gumroad.com/js/gumroad.js"></script><a class="gumroad-button" href="https://gum.co/xgits">Gumroad Link</a>
+    <a class="gumroad-button" href="https://gum.co/xgits">Gumroad Link</a>
 
 # 安装方法:
     下载ZIP压缩包, 或者github项目, 然后:

@@ -17,12 +17,12 @@ def fastExport(exportType):
     exportFolder = exportPath+"models/"
     if not os.path.exists(exportFolder):
         os.mkdir(exportFolder)
-    exportName = exportFolder+sel[0]
+    exportName = exportFolder+sel[0].split(':')[-1]
 
     if exportType == 'OBJ':
         if cmds.pluginInfo("objExport",q=1,l=1) !=1: 
             mds.loadPlugin("objExport",qt=1)
-        cmds.file(exportName, force=True, options='groups=1;ptgroups=1;materials=1;smoothing=1;normal s=1', type='OBJexport', pr=True, es=True)
+        cmds.file(exportName, force=True, options='groups=1;ptgroups=1;materials=1;smoothing=1;normals=1', type='OBJexport', pr=True, es=True)
 
     elif exportType == 'FBX':
         if cmds.pluginInfo("fbxmaya",q=1,l=1) !=1: 

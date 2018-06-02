@@ -111,6 +111,7 @@ for i in range(sizeOfPaths):
         sys.path.append(PATH_SOURCE_ALL[i])
 
 from checkUVBleed import *
+import ldmaya.plugin as plugin
 ################################ Define Globals End ###############################
 
 # all defined function is started with f_
@@ -709,7 +710,6 @@ def f_selectEveryNEdge():
 def f_ribbonGen():
     import ribbonGen
     ribbonGen.ribbonGen()
-    f_sourceMel(PATH_LDMT_Func_Mod_debug, "fixReverse")
 
 def f_tubeGen():
     sel = cmds.ls(sl=1)

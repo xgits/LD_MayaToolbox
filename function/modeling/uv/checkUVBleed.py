@@ -383,9 +383,18 @@ def selectUVNotPass(sel,positions):  #### FINAL STAGE
 ####### MY EVALUATE FUNCTION #########
 def getUVDic(sel):
     # UVDics are connected, keep the codes in order, shit codes
-    uvid_usi = cmds.polyEvaluate(sel+'.map[*]',usi=1) # [usi]
+    selList = om2.MSelectionList()
+    selList.add(sel)
+    selPath = selList.getDagPath(0)
+    selMesh = om2.MFnMesh(selPath)
+    uvArray = selMesh.getUVs()
+
+    uvid_usi = selMesh.getUvShellsIds() # [usi1,usi2,...]
+    uvid_usi = uvid_usi[1]
     usi_uvids = {}  # generate {usi:uvid,} from [usi]
     usi_uvname = {} # generate {usi:uvname,} from [usi]
+    uvid_uv = {}  # generate {uvid:[u,v],} from MFnMesh.getUVs()
+
     for uvid in range(len(uvid_usi)):
         usi = uvid_usi[uvid]
         if usi in usi_uvids:
@@ -395,12 +404,7 @@ def getUVDic(sel):
             usi_uvids[usi] = [uvid]
             usi_uvname[usi] = [sel+'.map['+str(uvid)+']']
             
-    uvid_uv = {}  # generate {uvid:[u,v],} from MFnMesh.getUVs()
-    selList = om2.MSelectionList()
-    selList.add(sel)
-    selPath = selList.getDagPath(0)
-    selMesh = om2.MFnMesh(selPath)
-    uvArray = selMesh.getUVs()
+    
     for i in range(len(uvArray[0])):
         uvid_uv[i] = [uvArray[0][i],uvArray[1][i]]
 

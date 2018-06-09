@@ -11,13 +11,10 @@
     keep track of this tool and improve it to be better. This tool will only get your count of clicks. The information
     will be used and only be used for improve this tool. 
 
-<<<<<<< HEAD
     2. Second option is to buy a pro version on gumroad here: If you have concerns about upload your information or 
     just being kind to me, you can buy this version of toolbox. 
-=======
     2. Second option is to buy a pro version on gumroad here:  the pro version has a few functions with bonus performance. 
     If you have concerns about upload your information or just being kind to me, you can buy this version of toolbox. 
->>>>>>> 19d6bed07b52b078b1ae048b6589323e3e0a63ee
 
     Free to use both version for commercial or personal use.
 

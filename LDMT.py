@@ -2,7 +2,7 @@
 # Auther:  Liu Dian
 # Email:   xgits@outlook.com
 # Website: www.xgits.com
-# Version: Github
+# Version: Pro
 
 import maya.cmds as cmds
 import maya.mel as mel
@@ -18,7 +18,7 @@ import json
 ################################ Define Globals Start ###############################
 
 # common stuff
-LDMT_version             = "0.2" # LDMT's child variable are lowercase with "_"
+LDMT_version             = "Pro 0.2" # LDMT's child variable are lowercase with "_"
 LDMT_UI_title            = "LD Maya Toolbox" + " " + LDMT_version
 LDMT_UI_window           = "LDMT_UI_window"
 LDMT_UI_form             = "LDMT_UI_form"
@@ -111,7 +111,11 @@ for i in range(sizeOfPaths):
         sys.path.append(PATH_SOURCE_ALL[i])
 
 from checkUVBleed import *
+<<<<<<< HEAD
+from moveOverlapUVOut import *
+=======
 import ldmaya.plugin as plugin
+>>>>>>> 19d6bed07b52b078b1ae048b6589323e3e0a63ee
 ################################ Define Globals End ###############################
 
 # all defined function is started with f_
@@ -311,9 +315,9 @@ def f_UI_create():
                 bgc=green, l="QuickUV", c= 'f_command("Quick UV")')
     cmds.gridLayout(numberOfColumns = 2, cellHeight = LDMT_UI_cell_height, cellWidth=LDMT_UI_width/4)
     cmds.button(ann="Move all UVs into 0-1.", 
-                bgc=green, l="UV In", c= 'f_command("UV In")')    
+                bgc=green, l="UV In", c= 'f_move2rdUVIn()')    
     cmds.button(ann="Move all overlaping UVs out of 0-1 .", 
-                bgc=green, l="UV Out", c= 'f_command("UV Out")') 
+                bgc=green, l="UV Out", c= 'f_moveOverlapUVOut()') 
     cmds.setParent("..")
     
     # UVTools Row 2
@@ -762,7 +766,11 @@ def f_seamsEasy(command):
         cmds.loadPlugin (pluginPath)
     if command == "seams" : mel.eval("seamsEasy")
     if command == "stitches" : mel.eval("stitchEasy")
-
+def f_move2rdUVIn():
+    import move2rdUVIn
+    move2rdUVIn.LD_move2rdUVIn()
+def f_moveOverlapUVOut():
+    LD_moveOverlapUVOut()
 def f_UVDeluxe():
     from UVDeluxe import uvdeluxe
     uvdeluxe.createUI()

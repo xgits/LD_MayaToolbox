@@ -115,7 +115,6 @@ def morph2UV(sel):
     #split if on uv border
     vertIt = om2.MItMeshVertex(selPath)
     selMesh = om2.MFnMesh(selPath)
-<<<<<<< HEAD
     selVtxIter = om2.MItMeshVertex(selPath)
     selEdgeIter = om2.MItMeshEdge(selPath)
     selFaceIter = om2.MItMeshPolygon(selPath)
@@ -137,7 +136,6 @@ def morph2UV(sel):
     while not selVtxIter.isDone():   #get {[[uvid1,uvid2],...]}
         vtxid_uvid.append(list(set(selVtxIter.getUVIndices())))
         selVtxIter.next()
-=======
     vertIdToSplit = []
     vertToSplit = []
     while not vertIt.isDone():
@@ -190,7 +188,6 @@ def moveOutOverlapUV(sel,ifDelete="move"):  # add two method to detect!!!!!!!!!!
         usi_bbarea[i] = abs(usi_bb[i][0][0]-usi_bb[i][0][1])*abs(usi_bb[i][1][0]-usi_bb[i][1][1])
     bbarea_usi_zip = sorted(zip(usi_bbarea.values(), usi_bbarea.keys())) # get [(minarea, usi0),...,( maxarea, usi99)]
     bbarea_usi_zip.reverse()
->>>>>>> 19d6bed07b52b078b1ae048b6589323e3e0a63ee
 
     # intersect method
     for area_usiA_tuple in range(len(bbarea_usi_zip)):

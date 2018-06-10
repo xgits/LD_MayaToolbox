@@ -113,6 +113,7 @@ for i in range(sizeOfPaths):
 from checkUVBleed import *
 from moveOverlapUVOut import *
 from ldmaya import ldmaya as ld
+from curveWarp import *
 ################################ Define Globals End ###############################
 
 # all defined function is started with f_

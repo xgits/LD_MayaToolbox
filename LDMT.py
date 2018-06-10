@@ -111,11 +111,8 @@ for i in range(sizeOfPaths):
         sys.path.append(PATH_SOURCE_ALL[i])
 
 from checkUVBleed import *
-<<<<<<< HEAD
 from moveOverlapUVOut import *
-=======
-import ldmaya.plugin as plugin
->>>>>>> 19d6bed07b52b078b1ae048b6589323e3e0a63ee
+from ldmaya import ldmaya as ld
 ################################ Define Globals End ###############################
 
 # all defined function is started with f_

@@ -1,0 +1,780 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LDRibbonToolsUI</class>
+ <widget class="QMainWindow" name="LDRibbonToolsUI">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>350</width>
+    <height>310</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>350</width>
+    <height>250</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>450</width>
+    <height>550</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>LD Ribbon Tools</string>
+  </property>
+  <property name="windowOpacity">
+   <double>1.000000000000000</double>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="QTabWidget" name="ldmt_ribbonTools">
+      <property name="statusTip">
+       <string notr="true"/>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton{color: rgb(255,255,255);
+background-color: rgb(93, 93, 93);
+border-style: solid;
+border-width:0px;
+border-radius:5px;
+min-height:24px;}
+QPushButton:hover{background-color: rgb(112, 112, 112);
+};
+</string>
+      </property>
+      <property name="tabPosition">
+       <enum>QTabWidget::North</enum>
+      </property>
+      <property name="tabShape">
+       <enum>QTabWidget::Rounded</enum>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>28</width>
+        <height>28</height>
+       </size>
+      </property>
+      <property name="tabBarAutoHide">
+       <bool>false</bool>
+      </property>
+      <widget class="QWidget" name="LDRibbonToolUI_generate">
+       <attribute name="title">
+        <string>Generate</string>
+       </attribute>
+       <attribute name="toolTip">
+        <string>Haircard generation tools, select curves before use.</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <property name="leftMargin">
+         <number>5</number>
+        </property>
+        <property name="topMargin">
+         <number>5</number>
+        </property>
+        <property name="rightMargin">
+         <number>5</number>
+        </property>
+        <property name="bottomMargin">
+         <number>5</number>
+        </property>
+        <property name="spacing">
+         <number>5</number>
+        </property>
+        <item row="1" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <property name="spacing">
+           <number>5</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="btn_generateRibbon">
+            <property name="statusTip">
+             <string> Generate ribbon from curve(s).</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(68, 145, 185, 200), stop:1 rgba(108, 185, 224, 180));
+color:rgb(25,25,25);}
+QPushButton:hover{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(88, 165, 205, 255), stop:1 rgba(128, 205, 244, 255));
+color:rgb(25,25,25);
+text-decoration: underline!important;}
+QPushButton:pressed{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(108, 185, 224, 180), stop:1 rgba(68, 145, 185, 200));
+color:rgb(25,25,25);}</string>
+            </property>
+            <property name="text">
+             <string>Generate Ribbon</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btn_generateFromMesh">
+            <property name="mouseTracking">
+             <bool>false</bool>
+            </property>
+            <property name="statusTip">
+             <string> Generate from the selected haircard in list.</string>
+            </property>
+            <property name="autoFillBackground">
+             <bool>false</bool>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(68, 145, 185, 200), stop:1 rgba(108, 185, 224, 180));
+color:rgb(25,25,25);}
+QPushButton:hover{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(88, 165, 205, 255), stop:1 rgba(128, 205, 244, 255));
+color:rgb(25,25,25);
+text-decoration: underline!important;}
+QPushButton:pressed{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(108, 185, 224, 180), stop:1 rgba(68, 145, 185, 200));
+color:rgb(25,25,25);}</string>
+            </property>
+            <property name="text">
+             <string>Generate From Mesh</string>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="3" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <property name="spacing">
+           <number>5</number>
+          </property>
+          <property name="sizeConstraint">
+           <enum>QLayout::SetDefaultConstraint</enum>
+          </property>
+          <item>
+           <widget class="QPushButton" name="btn_pivotToCV0">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>26</height>
+             </size>
+            </property>
+            <property name="statusTip">
+             <string> Move pivot to CV0. You can select connected meshes as input.</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(189, 118, 57, 225), stop:1 rgba(235, 158, 108, 195));
+color:rgb(25,25,25);}
+QPushButton:hover{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(189, 118, 57, 255), stop:1 rgba(255, 178, 128, 255));
+color:rgb(25,25,25);
+text-decoration: underline!important;
+}
+QPushButton:pressed{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(235, 158, 108, 195), stop:1 rgba( 189, 118, 57, 225));
+color:rgb(25,25,25);}</string>
+            </property>
+            <property name="text">
+             <string>Pivot To CV0</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btn_reverseCV">
+            <property name="statusTip">
+             <string> Reverse curve(s). You can select connected meshes as input.</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(189, 118, 57, 225), stop:1 rgba(235, 158, 108, 195));
+color:rgb(25,25,25);}
+QPushButton:hover{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(189, 118, 57, 255), stop:1 rgba(255, 178, 128, 255));
+color:rgb(25,25,25);
+text-decoration: underline!important;
+}
+QPushButton:pressed{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(235, 158, 108, 195), stop:1 rgba( 189, 118, 57, 225));
+color:rgb(25,25,25);}</string>
+            </property>
+            <property name="text">
+             <string>Reverse CV</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btn_smoothCV">
+            <property name="statusTip">
+             <string> Rebuild curve(s) to fewer spans. Can use connected meshes as input.</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(189, 118, 57, 225), stop:1 rgba(235, 158, 108, 195));
+color:rgb(25,25,25);}
+QPushButton:hover{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(189, 118, 57, 255), stop:1 rgba(255, 178, 128, 255));
+color:rgb(25,25,25);
+text-decoration: underline!important;
+}
+QPushButton:pressed{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(235, 158, 108, 195), stop:1 rgba( 189, 118, 57, 225));
+color:rgb(25,25,25);}</string>
+            </property>
+            <property name="text">
+             <string>Smooth CV</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btn_densifyCV">
+            <property name="statusTip">
+             <string> Rebuild curve(s) to more spans. Can use connected meshes as input.</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(189, 118, 57, 225), stop:1 rgba(235, 158, 108, 195));
+color:rgb(25,25,25);}
+QPushButton:hover{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(189, 118, 57, 255), stop:1 rgba(255, 178, 128, 255));
+color:rgb(25,25,25);
+text-decoration: underline!important;
+}
+QPushButton:pressed{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(235, 158, 108, 195), stop:1 rgba( 189, 118, 57, 225));
+color:rgb(25,25,25);}</string>
+            </property>
+            <property name="text">
+             <string>Densify CV</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="0" column="0">
+         <layout class="QVBoxLayout" name="verticalLayout" stretch="0">
+          <property name="sizeConstraint">
+           <enum>QLayout::SetMinimumSize</enum>
+          </property>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetMinimumSize</enum>
+            </property>
+            <item>
+             <widget class="QListWidget" name="list_selection">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>1</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>200</width>
+                <height>100</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>300</width>
+                <height>16777215</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QGridLayout" name="gridLayout_2" columnstretch="0">
+              <property name="sizeConstraint">
+               <enum>QLayout::SetMinimumSize</enum>
+              </property>
+              <item row="1" column="0">
+               <widget class="QPushButton" name="btn_remove">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+                  <horstretch>1</horstretch>
+                  <verstretch>1</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>80</width>
+                  <height>26</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>100</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="statusTip">
+                 <string> Remove single haircard item from list.</string>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QPushButton{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(189, 118, 57, 225), stop:1 rgba(235, 158, 108, 195));
+color:rgb(25,25,25);}
+QPushButton:hover{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(189, 118, 57, 255), stop:1 rgba(255, 178, 128, 255));
+color:rgb(25,25,25);
+text-decoration: underline!important;
+}
+QPushButton:pressed{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(235, 158, 108, 195), stop:1 rgba( 189, 118, 57, 225));
+color:rgb(25,25,25);}</string>
+                </property>
+                <property name="text">
+                 <string>Remove</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QPushButton" name="btn_add">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+                  <horstretch>1</horstretch>
+                  <verstretch>1</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>80</width>
+                  <height>26</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>100</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="statusTip">
+                 <string> Add pre-made haircard items into list. Multiple supported.</string>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QPushButton{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(189, 118, 57, 225), stop:1 rgba(235, 158, 108, 195));
+color:rgb(25,25,25);}
+QPushButton:hover{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(189, 118, 57, 255), stop:1 rgba(255, 178, 128, 255));
+color:rgb(25,25,25);
+text-decoration: underline!important;
+}
+QPushButton:pressed{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(235, 158, 108, 195), stop:1 rgba( 189, 118, 57, 225));
+color:rgb(25,25,25);}</string>
+                </property>
+                <property name="text">
+                 <string>Add</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QPushButton" name="btn_clear">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+                  <horstretch>1</horstretch>
+                  <verstretch>1</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>80</width>
+                  <height>26</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>100</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="statusTip">
+                 <string> Clear all the haircard items from list.</string>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">*.QPushButton{ 
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(135, 135, 135, 225), stop:1 rgba(185,185, 185, 195));
+border:1px solid rgb(30,30,30);
+color: rgb( 25,25,25 );
+}
+*.QPushButton:hover{ 
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(155, 155, 155, 255), stop:1 rgba(205,205, 205, 255));
+border:1px solid rgb(30,30,30);
+color: rgb( 25,25,25 );
+text-decoration: underline!important;
+}
+*.QPushButton:pressed{ 
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(175, 175, 175, 195), stop:1 rgba(115,115, 115, 225));
+border:1px solid rgb(30,30,30);
+color: rgb( 25,25,25 );
+}</string>
+                </property>
+                <property name="text">
+                 <string>Clear</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+        <item row="4" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <property name="spacing">
+           <number>5</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="btn_getMeshFromCurve">
+            <property name="statusTip">
+             <string>Get related mesh from curves.</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(68, 145, 185, 200), stop:1 rgba(108, 185, 224, 180));
+color:rgb(25,25,25);}
+QPushButton:hover{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(88, 165, 205, 255), stop:1 rgba(128, 205, 244, 255));
+color:rgb(25,25,25);
+text-decoration: underline!important;}
+QPushButton:pressed{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(108, 185, 224, 180), stop:1 rgba(68, 145, 185, 200));
+color:rgb(25,25,25);}</string>
+            </property>
+            <property name="text">
+             <string>Get Mesh From Curve</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btn_getCurveFromMesh">
+            <property name="mouseTracking">
+             <bool>false</bool>
+            </property>
+            <property name="statusTip">
+             <string>Get related curves from meshes.</string>
+            </property>
+            <property name="autoFillBackground">
+             <bool>false</bool>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(189, 118, 57, 225), stop:1 rgba(235, 158, 108, 195));
+color:rgb(25,25,25);}
+QPushButton:hover{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(189, 118, 57, 255), stop:1 rgba(255, 178, 128, 255));
+color:rgb(25,25,25);
+text-decoration: underline!important;
+}
+QPushButton:pressed{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(235, 158, 108, 195), stop:1 rgba( 189, 118, 57, 225));
+color:rgb(25,25,25);}</string>
+            </property>
+            <property name="text">
+             <string>Get Curve From Mesh</string>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_generate">
+       <property name="styleSheet">
+        <string notr="true">QPushButton{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(189, 118, 57, 225), stop:1 rgba(235, 158, 108, 195));
+color:rgb(25,25,25);}
+QPushButton:hover{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(189, 118, 57, 255), stop:1 rgba(255, 178, 128, 255));
+color:rgb(25,25,25);
+text-decoration: underline!important;
+}
+QPushButton:pressed{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(235, 158, 108, 195), stop:1 rgba( 189, 118, 57, 225));
+color:rgb(25,25,25);}</string>
+       </property>
+       <attribute name="title">
+        <string>Edit</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <property name="verticalSpacing">
+         <number>9</number>
+        </property>
+        <item row="5" column="2">
+         <widget class="QPushButton" name="btn_alignRibbonToTangent">
+          <property name="statusTip">
+           <string>Select ribbons first then the target surface.</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+          <property name="text">
+           <string>Align Ribbon To Tangent</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QPushButton" name="btn_fixCurvature">
+          <property name="statusTip">
+           <string>Fix curvature direction error.</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+          <property name="text">
+           <string>Fix Curvature</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1" colspan="2">
+         <widget class="QGroupBox" name="groupBox_deformer_2">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">*.QGroupBox {
+    background-style:None;
+	margin-top:6px;
+	border:1px solid rgb(145,145,145);
+	padding: 2px 1px 1px 1px;
+	border-radius: 6px;
+}
+
+*.QGroupBox::title {
+    background-style: None;
+	top:-9px;
+	subcontrol-position: top center;
+	color: rgb(145,145,145);
+}</string>
+          </property>
+          <property name="title">
+           <string>Randomize Attributes</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_8">
+           <property name="leftMargin">
+            <number>6</number>
+           </property>
+           <property name="topMargin">
+            <number>6</number>
+           </property>
+           <property name="rightMargin">
+            <number>6</number>
+           </property>
+           <property name="bottomMargin">
+            <number>2</number>
+           </property>
+           <property name="spacing">
+            <number>5</number>
+           </property>
+           <item row="2" column="1">
+            <widget class="QPushButton" name="btn_random_taper">
+             <property name="statusTip">
+              <string>Randomize taper.</string>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="text">
+              <string>Taper</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QPushButton" name="btn_random_rotation">
+             <property name="statusTip">
+              <string>Randomize rotation.</string>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="text">
+              <string>Rotation</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QPushButton" name="btn_random_width">
+             <property name="statusTip">
+              <string>Randomize width.</string>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="text">
+              <string>Width</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QPushButton" name="btn_random_curvature">
+             <property name="statusTip">
+              <string>Randomize curvature.</string>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="text">
+              <string>Curvature</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QPushButton" name="btn_random_twist">
+             <property name="statusTip">
+              <string>Randomize twist.</string>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="text">
+              <string>Twist</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="text_randomIntensity">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="statusTip">
+              <string>Input a percentage as random intensity.</string>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">border-radius: 4px;
+border:1px solid rgb(30,30,30);
+background-color: rgb(30,30,30, 215);
+color:rgb(175,175,175);</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>Random Intensity (%)</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusBar">
+   <property name="toolTip">
+    <string>Liu Dian xgits@outlook.com</string>
+   </property>
+   <property name="statusTip">
+    <string>Liu Dian xgits@outlook.com</string>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

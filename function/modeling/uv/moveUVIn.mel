@@ -1,6 +1,0 @@
-global proc moveUVIn()
-{
-    SelectMeshUVShell;
-    selectUVFaceOrientationComponents {} 0 2 1;
-    polyEditUV -u -1 -v 0;
-}

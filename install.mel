@@ -1,0 +1,25 @@
+global proc ldmt_install_procedureProxy()
+{}
+
+global proc string ldmt_install_findFolderPath()
+{
+	string $place=`whatIs ldmt_install_procedureProxy`;
+	string $buffer[];
+ 	$numTokens = `tokenize $place ":" $buffer`;
+	$place=strip ($buffer[1]+":"+$buffer[2]);
+	string $buffer1[];
+ 	$numTokens = `tokenize $place "/" $buffer1`;
+	$place=$buffer1[0];
+    for ($i=1;$i<($numTokens-1);$i++)
+    {
+        $place=$place+"/"+$buffer1[$i];
+    }
+	return	$place;	
+}
+
+string $ldmt_folderPath = `ldmt_install_findFolderPath`;
+python("import sys");
+python("sys.path.insert(0,'"+$ldmt_folderPath+"')");
+python("import ldmt_setup");
+python("reload(ldmt_setup)");
+python("ldmt_setup.install()");

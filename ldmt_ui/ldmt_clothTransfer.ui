@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ldmt_clothTransfer</class>
+ <widget class="QMainWindow" name="ldmt_clothTransfer">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>200</width>
+    <height>130</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>200</width>
+    <height>130</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>200</width>
+    <height>300</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Cloth Transfer Tool</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QMainWindow{
+background-color: rgb(68,68,68);
+}
+QWidget#centralwidget{
+background-color: rgb(68,68,68);
+}
+QPushButton{ 
+border:1px solid rgb(30,30,30);
+border-radius:4px;
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(189, 118, 57, 225), stop:1 rgba(235, 158, 108, 195));
+color:rgb(25,25,25);}
+QPushButton:hover{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(189, 118, 57, 225), stop:1 rgba(255, 178, 128, 195));
+color:rgb(25,25,25);}
+QPushButton:pressed{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(235, 158, 108, 195), stop:1 rgba( 189, 118, 57, 225));
+color:rgb(25,25,25);}
+
+QRadioButton{
+color:rgb(175,175,175);
+}
+QCheckBox{
+color:rgb(175,175,175);
+}
+
+QStatusBar QLabel {
+    border: 3px solid white;
+}
+
+QStatusBar {
+    color: rgb(175,175,175);
+}
+
+QStatusBar::item {
+    border: 1px solid red;
+    border-radius: 3px;
+}</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="minimumSize">
+    <size>
+     <width>200</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>200</width>
+     <height>16777215</height>
+    </size>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>6</number>
+    </property>
+    <property name="topMargin">
+     <number>6</number>
+    </property>
+    <property name="rightMargin">
+     <number>6</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <property name="spacing">
+     <number>3</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="QPushButton" name="btn_setCloth">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>100</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>90</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="statusTip">
+       <string>Set cloth you want to transfer.</string>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton{ 
+border:1px solid rgb(30,30,30);
+border-radius:4px;
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(189, 118, 57, 225), stop:1 rgba(235, 158, 108, 195));
+color:rgb(25,25,25);}
+QPushButton:hover{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(189, 118, 57, 225), stop:1 rgba(255, 178, 128, 195));
+color:rgb(25,25,25);}
+QPushButton:pressed{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(235, 158, 108, 195), stop:1 rgba( 189, 118, 57, 225));
+color:rgb(25,25,25);}
+</string>
+      </property>
+      <property name="text">
+       <string>Set Cloth</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QPushButton" name="btn_setOrigin">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>100</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>90</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="statusTip">
+       <string>Set origin body.</string>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton{ 
+border:1px solid rgb(30,30,30);
+border-radius:4px;
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(189, 118, 57, 225), stop:1 rgba(235, 158, 108, 195));
+color:rgb(25,25,25);}
+QPushButton:hover{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(189, 118, 57, 225), stop:1 rgba(255, 178, 128, 195));
+color:rgb(25,25,25);}
+QPushButton:pressed{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(235, 158, 108, 195), stop:1 rgba( 189, 118, 57, 225));
+color:rgb(25,25,25);}
+</string>
+      </property>
+      <property name="text">
+       <string>Set Origin</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QPushButton" name="btn_setTarget">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>100</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>90</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="statusTip">
+       <string>Set target body.</string>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton{ 
+border:1px solid rgb(30,30,30);
+border-radius:4px;
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(189, 118, 57, 225), stop:1 rgba(235, 158, 108, 195));
+color:rgb(25,25,25);}
+QPushButton:hover{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(189, 118, 57, 225), stop:1 rgba(255, 178, 128, 195));
+color:rgb(25,25,25);}
+QPushButton:pressed{ 
+ border:1px solid rgb(30,30,30);
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(235, 158, 108, 195), stop:1 rgba( 189, 118, 57, 225));
+color:rgb(25,25,25);}
+</string>
+      </property>
+      <property name="text">
+       <string>Set Target</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QPushButton" name="btn_selectTarget">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>90</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="statusTip">
+       <string>Click to select the faces you set as target.</string>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton{ 
+ border:1px solid rgb(30,30,30);
+background-color: rgb(30, 30, 30, 215);
+color:rgb(175,175,175);}
+
+
+QPushButton:hover{ 
+ border:1px solid rgb(30,30,30);
+background-color: rgb(75,75,75, 215);
+color:rgb(175,175,175);}
+
+QPushButton:pressed{ 
+ border:1px solid rgb(30,30,30);
+background-color: rgb(100,100,100, 215);
+color:rgb(175,175,175);}
+</string>
+      </property>
+      <property name="text">
+       <string>...</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QPushButton" name="btn_selectOrigin">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>90</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="statusTip">
+       <string>Click to select the verts you set as target.</string>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton{ 
+ border:1px solid rgb(30,30,30);
+background-color: rgb(30, 30, 30, 215);
+color:rgb(175,175,175);}
+
+
+QPushButton:hover{ 
+ border:1px solid rgb(30,30,30);
+background-color: rgb(75,75,75, 215);
+color:rgb(175,175,175);}
+
+QPushButton:pressed{ 
+ border:1px solid rgb(30,30,30);
+background-color: rgb(100,100,100, 215);
+color:rgb(175,175,175);}
+</string>
+      </property>
+      <property name="text">
+       <string>...</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QPushButton" name="btn_selectCloth">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>90</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="statusTip">
+       <string>Click to select the meshes you set as base mesh.</string>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton{ 
+ border:1px solid rgb(30,30,30);
+background-color: rgb(30, 30, 30, 215);
+color:rgb(175,175,175);}
+
+
+QPushButton:hover{ 
+ border:1px solid rgb(30,30,30);
+background-color: rgb(75,75,75, 215);
+color:rgb(175,175,175);}
+
+QPushButton:pressed{ 
+ border:1px solid rgb(30,30,30);
+background-color: rgb(100,100,100, 215);
+color:rgb(175,175,175);}
+</string>
+      </property>
+      <property name="text">
+       <string>...</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0" colspan="2">
+     <widget class="QPushButton" name="btn_transfer">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>90</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+       </font>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="statusTip">
+       <string>Click to run the trasferring process.</string>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">*.QPushButton{ 
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(135, 135, 135, 225), stop:1 rgba(185,185, 185, 195));
+border:1px solid rgb(30,30,30);
+color: rgb( 25,25,25 );
+}
+*.QPushButton:hover{ 
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(155, 155, 155, 225), stop:1 rgba(205,205, 205, 195));
+border:1px solid rgb(30,30,30);
+color: rgb( 25,25,25 );
+text-decoration: underline!important;
+}
+*.QPushButton:pressed{ 
+background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(175, 175, 175, 195), stop:1 rgba(115,115, 115, 225));
+border:1px solid rgb(30,30,30);
+color: rgb( 25,25,25 );
+}</string>
+      </property>
+      <property name="text">
+       <string>Transfer</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="statusTip">
+    <string/>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

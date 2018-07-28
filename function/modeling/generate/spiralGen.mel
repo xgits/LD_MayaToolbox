@@ -1,0 +1,19 @@
+global proc spiralGen()
+{
+    string $userName = `getenv "USER"`;
+    string $selectedCurve[] = `ls -sl`;
+    if (size($selectedCurve) > 0){
+    string $shapes[] = `listRelatives -children $selectedCurve[0]`;
+    string $shape = $shapes[0];
+
+    string $node = createNode("curveSpiral");
+    connectAttr($shape + ".worldSpace", $node + ".ic");
+    $outputNode = createNode("nurbsCurve");
+    connectAttr($node + ".oc", $outputNode + ".create");
+    
+    select $outputNode $node;
+    AttributeEditor;
+    }else{
+    print "No Curve Selected!";
+    }
+}

@@ -1,0 +1,25 @@
+global proc ropeGen_helix()
+{
+    int $ropeCount = `intField -q -v rope_count`;
+    float $ropeAngle = 360/$ropeCount;
+    int $i_count;
+    string $curve[]=`ls -sl`;
+    int $curve_count = size($curve);
+    int $i;
+    for( $i = 0;$i<$curve_count;$i++)
+    {
+    string $curve0 = $curve[$i];
+    float $arclength=`arclen $curve0`;
+    for($i_count = 0;$i_count<$ropeCount;$i_count++)
+        {
+        float $rotationAngle = $i_count*$ropeAngle;
+        string $helixtowrap[]=`polyHelix -c 10 -h $arclength -w 2 -r 0.4 -sa 8 -sco 50 -sc 1 -d 1 -ax 0 1 0 -rcp 0 -cuv 3 -ch 1`;
+        select -add $curve0;
+        string $curvewrapname = `createCurveWarp`;
+        string $curvewraprotation = $curvewrapname + ".rotation";
+        string $helixheight = $helixtowrap[1] + ".height";
+        setAttr -lock 1 $helixheight;
+        setAttr $curvewraprotation $rotationAngle;
+        }
+    }
+}

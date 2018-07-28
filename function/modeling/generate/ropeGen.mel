@@ -1,0 +1,192 @@
+global proc ropeGen(){
+    string $outputNode1;
+    string $outputNode2;
+    string $Tube1;
+    string $Tube2;
+    string $RopeCurve;
+    string $userName = `getenv "USER"`;
+    string $selectedCurve[] = `ls -sl`;
+    int $i = 0;
+    for ($i =0;size($selectedCurve) > 0 && $i< size($selectedCurve);$i++){
+        string $shapes[] = `listRelatives -children $selectedCurve[$i]`;
+        $RopeCurve = $selectedCurve[$i];
+        string $shape = $shapes[0];
+        string $node1 = createNode("curveSpiral");
+        string $node2 = createNode("curveSpiral");
+        connectAttr($shape + ".worldSpace", $node1 + ".ic");
+        connectAttr($shape + ".worldSpace", $node2 + ".ic");        
+        $outputNode1 = createNode("nurbsCurve");
+        $outputNode2 = createNode("nurbsCurve");
+        connectAttr($node1 + ".oc", $outputNode1 + ".create");
+        connectAttr($node2 + ".oc", $outputNode2 + ".create");
+        select $outputNode1 $node1;
+        select -add $outputNode2 $node2;
+        string $node2_Rotation = $node2 + ".rotation";
+        setAttr $node2_Rotation 180;
+    global float $mayaVersion;    
+        if($mayaVersion>=2014){
+            ShowAttributeEditorOrChannelBox;
+            raiseChannelBox;
+        }
+        string $node1Parent[] = `listRelatives -p $outputNode1`;
+        string $node2Parent[] = `listRelatives -p $outputNode2`;  
+        print $node1Parent[0];      
+//Fix Orient Point Issue. You will konw trying without it when you edit the width. :P :P :P
+        string $node1_useRadMap = $node1 + ".useRadiusMap";
+        string $node2_useRadMap = $node2 + ".useRadiusMap";
+
+        string $node1_usePointCount = $node1 + ".usePointCount";
+        string $node2_usePointCount = $node2 + ".usePointCount";
+
+        string $node1_pointCount = $node1 + ".pointCount";
+        string $node2_pointCount = $node2 + ".pointCount";
+
+        string $node1_sweep = $node1 + ".sweep";
+        string $node2_sweep = $node2 + ".sweep";
+
+        setAttr $node1_useRadMap 1;
+        setAttr $node2_useRadMap 1;
+        setAttr $node1_usePointCount 1;
+        setAttr $node2_usePointCount 1;
+        setAttr $node1_pointCount 200;
+        setAttr $node2_pointCount 200;
+
+        string $RadMap1_1_Pos = $node1 + ".radiusMap[0].radiusMap_Position";
+        string $RadMap1_1_Val = $node1 + ".radiusMap[0].radiusMap_FloatValue";
+
+        string $RadMap1_2_Pos = $node1 + ".radiusMap[1].radiusMap_Position";
+        string $RadMap1_2_Val = $node1 + ".radiusMap[1].radiusMap_FloatValue";
+
+        string $RadMap1_3_Pos = $node1 + ".radiusMap[2].radiusMap_Position";
+        string $RadMap1_3_Val = $node1 + ".radiusMap[2].radiusMap_FloatValue";
+
+        string $RadMap1_4_Pos = $node1 + ".radiusMap[3].radiusMap_Position";
+        string $RadMap1_4_Val = $node1 + ".radiusMap[3].radiusMap_FloatValue";
+
+        string $RadMap2_1_Pos = $node2 + ".radiusMap[0].radiusMap_Position";
+        string $RadMap2_1_Val = $node2 + ".radiusMap[0].radiusMap_FloatValue";
+
+        string $RadMap2_2_Pos = $node2 + ".radiusMap[1].radiusMap_Position";
+        string $RadMap2_2_Val = $node2 + ".radiusMap[1].radiusMap_FloatValue";
+
+        string $RadMap2_3_Pos = $node2 + ".radiusMap[2].radiusMap_Position";
+        string $RadMap2_3_Val = $node2 + ".radiusMap[2].radiusMap_FloatValue";
+
+        string $RadMap2_4_Pos = $node2 + ".radiusMap[3].radiusMap_Position";
+        string $RadMap2_4_Val = $node2 + ".radiusMap[3].radiusMap_FloatValue";
+
+        setAttr $RadMap1_1_Pos 0;
+        setAttr $RadMap1_1_Val 0;
+
+        setAttr $RadMap1_2_Pos 0.01;
+        setAttr $RadMap1_2_Val 1;
+
+        setAttr $RadMap1_3_Pos 0.99;
+        setAttr $RadMap1_3_Val 1;
+
+        setAttr $RadMap1_4_Pos 1;
+        setAttr $RadMap1_4_Val 0;
+
+        setAttr $RadMap2_1_Pos 0;
+        setAttr $RadMap2_1_Val 0;
+
+        setAttr $RadMap2_2_Pos 0.01;
+        setAttr $RadMap2_2_Val 1;
+
+        setAttr $RadMap2_3_Pos 0.99;
+        setAttr $RadMap2_3_Val 1;
+
+        setAttr $RadMap2_4_Pos 1;
+        setAttr $RadMap2_4_Val 0;
+
+//With that fix you are good to go.
+    python("import tubeGen");
+    string $getList[] = python("tubeGen.tubeGen('" + $selectedCurve[$i] + "')");
+
+        string $Tubes[] = `ls -sl`;
+        $Tube1 = $Tubes[0];
+        $Tube2 = $Tubes[1];        
+
+        string $node1_radius = $node1 + ".radius";
+        string $node2_radius = $node2 + ".radius";
+        string $ropeWidthControl = $selectedCurve[$i]+".ropeWidth";
+        string $densityControl = $selectedCurve[$i]+".ropeDensity"; 
+        string $lengthDivisionsControl = $selectedCurve[$i]+".lengthDivisions"; 
+        string $widthDivisionsControl = $selectedCurve[$i]+".widthDivisions";
+        string $widthControl = $selectedCurve[$i]+".width"; 
+        string $taperControl = $selectedCurve[$i]+".taper";
+        string $reverseControl = $selectedCurve[$i]+".reverse";
+
+    //fix normal if reversed.
+        if(`attributeExists "ropeWidth" $selectedCurve[$i]`)
+        {
+        deleteAttr $ropeWidthControl;
+        deleteAttr $densityControl;
+        deleteAttr $lengthDivisionsControl;
+        deleteAttr $widthDivisionsControl;
+        deleteAttr $widthControl;
+        deleteAttr $taperControl;
+        deleteAttr $reverseControl;
+        }
+
+        select $selectedCurve[$i];
+        addAttr -ln "ropeWidth"  -k 1 -at double -h 0 -dv 1 $selectedCurve[$i] ;
+        addAttr -ln "ropeDensity"  -k 1 -at double -h 0 -min 0 -dv 50 $selectedCurve[$i];
+        addAttr -ln "lengthDivisions"  -k 1 -at long -h 0 -min 3 -dv 100 $selectedCurve[$i];
+        addAttr -ln "widthDivisions"  -k 1 -at long -h 0 -min 3 -dv 9 $selectedCurve[$i];
+        addAttr -ln "width"  -k 1 -at double -h 0 -min 0.01 -dv 1 $selectedCurve[$i];
+        addAttr -ln "taper"  -k 1 -at double -h 0 -min 0 -dv 1 $selectedCurve[$i];
+        addAttr -ln "reverse"  -k 1 -at bool -h 0 -min 0 -dv 0 $selectedCurve[$i];
+
+        string $Tube1_LengthDiv = $Tubes[0]+".lengthDivisions";
+        string $Tube2_LengthDiv = $Tubes[1]+".lengthDivisions";
+        string $Tube1_WidthDiv = $Tubes[0]+".widthDivisions";
+        string $Tube2_WidthDiv = $Tubes[1]+".widthDivisions";    
+        string $Tube1_Width = $Tubes[0]+".width";
+        string $Tube2_Width = $Tubes[1]+".width";
+        string $Tube1_Taper = $Tubes[0]+".taper";
+        string $Tube2_Taper = $Tubes[1]+".taper";
+
+        expression -s ($node1_radius+"="+$ropeWidthControl);
+        expression -s ($node2_radius+"="+$ropeWidthControl);
+
+        expression -s ($node1_sweep+"="+"10"+"*(2*"+$reverseControl+"-1)");
+        expression -s ($node2_sweep+"="+"10"+"*(2*"+$reverseControl+"-1)");
+
+        expression -s ($node1_pointCount+"="+$densityControl);
+        expression -s ($node2_pointCount+"="+$densityControl);
+
+        expression -s ($Tube1_LengthDiv+"="+$lengthDivisionsControl);
+        expression -s ($Tube2_LengthDiv+"="+$lengthDivisionsControl);
+
+        expression -s ($Tube1_WidthDiv+"="+$widthDivisionsControl);
+        expression -s ($Tube2_WidthDiv+"="+$widthDivisionsControl);
+
+        expression -s ($Tube1_Width+"="+$widthControl);
+        expression -s ($Tube2_Width+"="+$widthControl);
+
+        expression -s ($Tube1_Taper+"="+$taperControl);
+        expression -s ($Tube2_Taper+"="+$taperControl);
+
+        setAttr $lengthDivisionsControl 100;
+        setAttr $widthDivisionsControl 9;
+        setAttr $densityControl 200;
+    select $Tube1;
+    python("f_sourceMel(PATH_LDMT_Func_Mod_debug,\"fixReverse\")");
+    select $Tube2;
+    python("f_sourceMel(PATH_LDMT_Func_Mod_debug,\"fixReverse\")");
+    parent $getList[0] $selectedCurve[$i];
+    parent $getList[1] $selectedCurve[$i];
+    parent $node1Parent[0] $selectedCurve[$i];
+    parent $node2Parent[0] $selectedCurve[$i]; 
+    hide $node1Parent[0];
+    hide $node2Parent[0];
+
+
+    
+    select $selectedCurve[$i];
+    }
+}
+
+
+        

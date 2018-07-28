@@ -1,0 +1,6 @@
+global proc loadPluginVersion(string $plugin){
+    string $pluginName = returnPluginVersion($plugin);
+
+    if(`pluginInfo -q -l $pluginName`==0)
+    	loadPlugin $pluginName;
+}

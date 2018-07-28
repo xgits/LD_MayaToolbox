@@ -1,0 +1,16 @@
+global proc string returnPluginVersion(string $plugin){
+	string $mayaVer = `about -version`;
+    string $version;
+
+    if(`gmatch $mayaVer "2016 Extension 2"`)
+    	$version = "2016_5";
+	else if(`gmatch $mayaVer "2016"`)
+		$version = "2016";
+	else if(`gmatch $mayaVer "2017"`)
+		$version = "2017";
+	else if(`gmatch $mayaVer "2018"`)
+		$version = "2018";
+
+	string $pluginName = $plugin+"_x64_"+$version+".mll";
+	return $pluginName;
+}

@@ -1,0 +1,23 @@
+global proc unloadPluginVersion(string $plugin){
+    string $pluginName = returnPluginVersion($plugin);
+
+    if(`pluginInfo -q -l $pluginName`==1){
+        string $pluginNodes[] = `pluginInfo -q -dn $pluginName`;
+        for ($pnd in $pluginNodes){
+        	string $nodesToDelete[] = `ls -type $pnd`;
+    		for($nd in $nodesToDelete)
+    			delete $nd;
+        }
+
+        string $pluginTools[] = `pluginInfo -q -t $pluginName`;
+        string $contexts[] = `lsUI -ctx`;
+        for ($tool in $pluginTools){
+            for($ctx in $contexts)
+                if (`contextInfo -q -c $ctx`==$tool)
+                    deleteUI -tc $ctx;
+        }
+
+    	flushUndo;    
+        unloadPlugin $pluginName;
+    }
+}

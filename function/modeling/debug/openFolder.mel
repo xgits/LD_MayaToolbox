@@ -1,0 +1,9 @@
+global proc openFolder()
+{
+    int $size_FullFileDir=size(`file -query -location`);
+    int $size_ShortFileDir=size(`file -q -sn -shn`);
+    int $cutLength= $size_FullFileDir - $size_ShortFileDir;
+    string $fullFileDir=`file -query -location`;
+    string $path = `substring $fullFileDir 1 $cutLength`;
+    system("load \"" + $path + "\"");
+}

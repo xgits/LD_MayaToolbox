@@ -1,0 +1,40 @@
+/*
+Auther: Liu Dian
+Email: xgits@outlook.com
+Website: www.xgits.com
+*/
+
+global proc resetPivot()
+{
+    int $mod = `getModifiers`;
+
+    if($mod==0) 
+    {
+        FreezeTransformations;
+        ResetTransformations;
+    }
+    if($mod==8) 
+    {
+        FreezeTransformations;
+    }
+    if($mod == 4) 
+    {
+        xform -ws -t 0 0 0;
+    }
+    if($mod== 1) 
+    {
+        CenterPivot;
+    }
+    if($mod == 5) 
+    {
+        move -rpr 0 0 0;
+        FreezeTransformations;
+    }
+    if($mod == 13) 
+    {
+        float $pivotWSPos[] = `xform -ws -q -piv`;
+        move -rpr 0 0 0;
+        FreezeTransformations;
+        move -rpr $pivotWSPos[0] $pivotWSPos[1] $pivotWSPos[2];
+    }
+}

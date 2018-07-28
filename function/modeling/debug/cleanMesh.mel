@@ -1,0 +1,25 @@
+global proc cleanMesh(){
+    int $mod = `getModifiers`;
+    string $sel[] = `ls -sl -o`;
+    if ($mod == 0) {
+    polyCleanupArgList 4 { "0","1","1","0","1","1","1","0","1","1e-005","1","1e-005","0","1e-005","0","1","1","0" };
+    DeleteHistory;
+    }
+    if ($mod == 1) {
+    ConvertSelectionToVertices;
+    polyMergeVertex -distance 0.001 -ch 1;
+    select $sel;
+    polyCleanupArgList 4 { "0","2","1","0","1","1","1","0","1","1e-005","1","1e-005","0","1e-005","0","1","1","0" };
+    DeleteHistory;
+    select $sel;
+    }
+    if ($mod == 4) {
+    polyCleanupArgList 4 { "0","2","1","0","1","1","1","0","1","1e-005","1","1e-005","0","1e-005","0","1","1","0" };
+    string $q_select[]=`ls -sl`;
+    if ($q_select[0] == ""){
+    print"The model is fine.";
+    }
+    else {warning "There is error found, Please inspect the model.";
+    }
+    }
+}
